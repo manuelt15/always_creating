@@ -2,26 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    box-sizing: border-box;
   }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .marquee-track {
+    display: flex;
+    animation: marquee 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+}
+
+/* ─── Theme tokens ─────────────────────────────────────────── */
+:root {
+  --color-primary:        #f5f4f0;
+  --color-secondary:      #ffffff;
+  --color-card:           #ffffff;
+  --color-footer:         #f5f4f0;
+  --color-border:         #c8c6be;
+  --color-border-subtle:  #e0ded8;
+  --color-text-primary:   #111111;
+  --color-text-secondary: #444444;
+  --color-text-muted:     #888888;
+}
+
+.dark {
+  --color-primary:        #111111;
+  --color-secondary:      #1a1a1a;
+  --color-card:           #1a1a1a;
+  --color-footer:         #0d0d0d;
+  --color-border:         #333333;
+  --color-border-subtle:  #222222;
+  --color-text-primary:   #f5f4f0;
+  --color-text-secondary: #aaaaaa;
+  --color-text-muted:     #666666;
+}
+
+/* ─── View Transitions ─────────────────────────────────────── */
+:root {
+  --duration-exit:  150ms;
+  --duration-enter: 250ms;
+  --duration-move:  380ms;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide {
+  from { translate: var(--slide-offset); }
+  to   { translate: 0; }
+}
+
+/* Slide from right (overlay open) */
+::view-transition-new(.slide-from-right) {
+  --slide-offset: 80px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move)  ease-in-out both slide;
+}
+::view-transition-old(.slide-to-right) {
+  --slide-offset: 80px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+
+/* Fade (backdrop) */
+::view-transition-new(.fade-in) {
+  animation: var(--duration-enter) ease-out both fade;
+}
+::view-transition-old(.fade-out) {
+  animation: var(--duration-exit) ease-in both fade reverse;
+}
+
+/* Scale modal */
+@keyframes scale-up {
+  from { transform: scale(0.93); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+@keyframes scale-down {
+  from { transform: scale(1);    opacity: 1; }
+  to   { transform: scale(0.93); opacity: 0; }
+}
+::view-transition-new(.scale-in) {
+  animation: var(--duration-enter) cubic-bezier(0.34, 1.56, 0.64, 1) both scale-up;
+}
+::view-transition-old(.scale-out) {
+  animation: var(--duration-exit) ease-in both scale-down;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay:    0s !important;
   }
 }
