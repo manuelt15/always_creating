@@ -15,20 +15,24 @@ export async function POST(request) {
     await connectDB()
     await ContactMessage.create({ name, email, message })
 
-    Promise.all([
-      resend.emails.send({
-        from: FROM_EMAIL,
-        to:   email,
-        subject: 'We got your message — alwayscreating',
-        html: contactConfirmationEmail({ name }),
-      }),
-      resend.emails.send({
-        from: FROM_EMAIL,
-        to:   NOTIFY_EMAIL,
-        subject: `New message from ${name}`,
-        html: contactNotificationEmail({ name, email, message }),
-      }),
-    ]).catch(() => {})
+    try {
+      await Promise.all([
+        resend.emails.send({
+          from: FROM_EMAIL,
+          to:   email,
+          subject: 'We got your message — alwayscreating',
+          html: contactConfirmationEmail({ name }),
+        }),
+        resend.emails.send({
+          from: FROM_EMAIL,
+          to:   NOTIFY_EMAIL,
+          subject: `New message from ${name}`,
+          html: contactNotificationEmail({ name, email, message }),
+        }),
+      ])
+    } catch (emailErr) {
+      console.error('Email error:', emailErr.message)
+    }
 
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (err) {

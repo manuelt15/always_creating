@@ -15,12 +15,16 @@ export async function POST(request) {
     await connectDB()
     await NewsletterSubscriber.create({ email })
 
-    resend.emails.send({
-      from: FROM_EMAIL,
-      to:   email,
-      subject: 'You\'re in — alwayscreating',
-      html: newsletterConfirmationEmail(),
-    }).catch(() => {})
+    try {
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to:   email,
+        subject: 'You\'re in — alwayscreating',
+        html: newsletterConfirmationEmail(),
+      })
+    } catch (emailErr) {
+      console.error('Email error:', emailErr.message)
+    }
 
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (err) {
