@@ -1,4 +1,5 @@
 import Tag from './ui/Tag'
+import ParallaxImage from './ParallaxImage'
 
 export default function ArtistCard({ artist, onSelect, index = 0 }) {
   const { name, slug, bio, discipline = [], stats = {}, profileImage, social = {}, email } = artist
@@ -11,11 +12,7 @@ export default function ArtistCard({ artist, onSelect, index = 0 }) {
       {/* Image */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-primary">
         {profileImage ? (
-          <img
-            src={profileImage}
-            alt={name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          <ParallaxImage src={profileImage} alt={name} />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-text-muted text-[10px] tracking-[0.8px] uppercase font-body">
             No image
