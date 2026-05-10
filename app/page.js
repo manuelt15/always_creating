@@ -4,67 +4,21 @@ import ArtistCardGrid from '@/components/ArtistCardGrid'
 import ContactForm from '@/components/ContactForm'
 import NewsletterForm from '@/components/NewsletterForm'
 import Divider from '@/components/ui/Divider'
+import { connectDB } from '@/lib/mongodb'
+import Artist from '@/lib/models/Artist'
 
 async function getFeaturedArtists() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    const res = await fetch(`${baseUrl}/api/artists?featured=true`, { cache: 'no-store' })
-    if (!res.ok) return []
-    return res.json()
+    await connectDB()
+    return await Artist.find({ featured: true }).sort({ order: 1, createdAt: 1 }).lean()
   } catch {
     return []
   }
 }
 
-const MOCK_ARTISTS = [
-  {
-    _id: 'mock-1', slug: 'mock-1', name: 'Manuel Torres',
-    bio: 'Visual artist and photographer exploring urban landscapes and identity.',
-    discipline: ['Visual Art', 'Photography'],
-    stats: { releases: 8, listeners: 142000 }, profileImage: null, featured: true,
-    email: 'contact.manueltorres@gmail.com',
-    social: { instagram: 'https://instagram.com', website: 'https://example.com' },
-  },
-  {
-    _id: 'mock-2', slug: 'mock-2', name: 'Maria Jose',
-    bio: 'Electronic music producer and sound designer based in Buenos Aires.',
-    discipline: ['Music'],
-    stats: { releases: 22, listeners: 380000 }, profileImage: null, featured: true,
-    social: { instagram: 'https://instagram.com', spotify: 'https://spotify.com', soundcloud: 'https://soundcloud.com' },
-  },
-  {
-    _id: 'mock-3', slug: 'mock-3', name: 'Combo Running Club',
-    bio: 'Collective creating at the intersection of fashion and performance art.',
-    discipline: ['Fashion', 'Film'],
-    stats: { releases: 5, listeners: 67000 }, profileImage: null, featured: true,
-    social: { instagram: 'https://instagram.com', x: 'https://x.com' },
-  },
-  {
-    _id: 'mock-4', slug: 'mock-4', name: 'Maya',
-    bio: 'Multidisciplinary artist working across sculpture, film and music.',
-    discipline: ['Visual Art', 'Film'],
-    stats: { releases: 11, listeners: 195000 }, profileImage: null, featured: true,
-    social: { instagram: 'https://instagram.com', youtube: 'https://youtube.com' },
-  },
-  {
-    _id: 'mock-5', slug: 'mock-5', name: 'Carlos Herrera',
-    bio: 'Architect and visual thinker building immersive spatial experiences.',
-    discipline: ['Architecture'],
-    stats: { releases: 3, listeners: 28000 }, profileImage: null, featured: true,
-    social: { instagram: 'https://instagram.com', website: 'https://example.com' },
-  },
-  {
-    _id: 'mock-6', slug: 'mock-6', name: '04000s',
-    bio: 'Producer and DJ known for blending cumbia digital with experimental electronics.',
-    discipline: ['Music'],
-    stats: { releases: 18, listeners: 512000 }, profileImage: null, featured: true,
-    social: { instagram: 'https://instagram.com', spotify: 'https://spotify.com', soundcloud: 'https://soundcloud.com', x: 'https://x.com' },
-  },
-]
 
 export default async function HomePage() {
-  const artists = await getFeaturedArtists()
-  const list = (artists.length > 0 ? artists : MOCK_ARTISTS).slice(0, 3)
+  const list = (await getFeaturedArtists()).slice(0, 3)
 
   return (
     <>

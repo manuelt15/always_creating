@@ -2,59 +2,20 @@ import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import ArtistCardGrid from '@/components/ArtistCardGrid'
 import NewsletterForm from '@/components/NewsletterForm'
+import { connectDB } from '@/lib/mongodb'
+import Artist from '@/lib/models/Artist'
 
 async function getArtists() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    const res = await fetch(`${baseUrl}/api/artists`, { cache: 'no-store' })
-    if (!res.ok) return []
-    return res.json()
+    await connectDB()
+    return await Artist.find({}).sort({ order: 1, createdAt: 1 }).lean()
   } catch {
     return []
   }
 }
 
-const MOCK_ARTISTS = [
-  {
-    _id: 'mock-1', slug: 'mock-1', name: 'Manuel Torres',
-    bio: 'Multi-channel creator exploring digital expression through Beast, systems, and evolving interfaces.',
-    discipline: ['Visual Art', 'Photography'], profileImage: null,
-  },
-  {
-    _id: 'mock-2', slug: 'mock-2', name: 'Maria Jose',
-    bio: 'Madrid-based blending designer building identities through systems, concept, and visual coherence.',
-    discipline: ['Music'], profileImage: null,
-  },
-  {
-    _id: 'mock-3', slug: 'mock-3', name: 'Combo Running Club',
-    bio: 'Multi-based running collective blurring the boundary between movement, identity, and community.',
-    discipline: ['Fashion', 'Film'], profileImage: null,
-  },
-  {
-    _id: 'mock-4', slug: 'mock-4', name: 'Moya',
-    bio: 'Los Angeles-based photographer shaping visual narratives through light, timing, and perspective.',
-    discipline: ['Visual Art', 'Film'], profileImage: null,
-  },
-  {
-    _id: 'mock-5', slug: 'mock-5', name: 'Carlos Herrera',
-    bio: 'Buenos Aires-focused creator capturing movement, mindset, and the evolution behind every rule.',
-    discipline: ['Architecture'], profileImage: null,
-  },
-  {
-    _id: 'mock-6', slug: 'mock-6', name: '04009c',
-    bio: 'LA-based project shaping a brand that exists beyond clothing — rooted in identity, expression, and culture.',
-    discipline: ['Music'], profileImage: null,
-  },
-  {
-    _id: 'mock-7', slug: 'mock-7', name: 'Hause of MJ',
-    bio: 'Madrid-based creative studio shaping identities through concept, craft, and cultural tension.',
-    discipline: ['Fashion'], profileImage: null,
-  },
-]
-
 export default async function ArtistsPage() {
-  const artists = await getArtists()
-  const list = artists.length > 0 ? artists : MOCK_ARTISTS
+  const list = await getArtists()
 
   return (
     <>
