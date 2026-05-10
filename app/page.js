@@ -4,6 +4,7 @@ import ArtistCardGrid from '@/components/ArtistCardGrid'
 import ContactForm from '@/components/ContactForm'
 import NewsletterForm from '@/components/NewsletterForm'
 import Divider from '@/components/ui/Divider'
+import StatCounter from '@/components/StatCounter'
 import { connectDB } from '@/lib/mongodb'
 import Artist from '@/lib/models/Artist'
 
@@ -71,7 +72,7 @@ export default async function HomePage() {
             ].map((stat, i) => (
               <div key={stat.label} className="flex items-center">
                 <div className="py-8 pr-12 sm:pr-16 pl-0 sm:pl-0">
-                  <div className="font-heading text-[32px] text-text-primary leading-none">{stat.num}</div>
+                  <div className="font-heading text-[32px] text-text-primary leading-none"><StatCounter value={stat.num} /></div>
                   <div className="font-body text-[11px] text-text-muted mt-1.5">{stat.label}</div>
                 </div>
                 {i < 2 && <Divider orientation="vertical" className="hidden sm:block h-10 mr-12 sm:mr-16" />}
@@ -110,6 +111,17 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Marquee ────────────────────────────────────────── */}
+      <div className="bg-primary border-y border-subtle overflow-hidden py-5">
+        <div className="marquee-track">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <span key={i} className="font-heading text-[48px] sm:text-[64px] text-text-primary uppercase shrink-0 pr-10 leading-none select-none">
+              alwayscreating <span className="text-brand">✦</span>&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* ── CTA Banner ─────────────────────────────────────── */}
       <section className="bg-primary border-b border-subtle">

@@ -1,6 +1,7 @@
 import { Courier_Prime, Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import './globals.css'
+import CustomCursor from '@/components/CustomCursor'
 
 const courierPrime = Courier_Prime({
   subsets: ['latin'],
@@ -26,7 +27,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${courierPrime.variable} ${inter.variable} ${cyGrotesk.variable}`}>
-      <body className="bg-primary text-text-primary font-body min-h-screen antialiased">
+      <body className="bg-primary text-text-primary font-body min-h-screen antialiased cursor-none">
+        <CustomCursor />
         {children}
       </body>
     </html>
