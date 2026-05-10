@@ -78,7 +78,7 @@ export default function ArtistOverlay({ artist, onClose }) {
       {/* Modal */}
       <div className="relative z-10 w-full max-w-3xl max-h-[90vh] bg-secondary border border-subtle rounded-lg overflow-hidden flex flex-col sm:flex-row">
         {/* Image */}
-        <div className="sm:w-2/5 shrink-0 aspect-[3/4] sm:aspect-auto bg-primary overflow-hidden">
+        <div className="sm:w-2/5 shrink-0 h-44 sm:h-auto bg-primary overflow-hidden">
           {profileImage ? (
             <img src={profileImage} alt={name} className="w-full h-full object-cover" />
           ) : (
