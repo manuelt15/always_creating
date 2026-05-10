@@ -157,11 +157,11 @@ export default function ArtistOverlay({ artist, onClose }) {
           )}
 
           <Link
-            href={`/artists/${slug}`}
+            href="/artists"
             onClick={onClose}
             className="inline-flex items-center gap-2 text-brand font-body text-sm hover:underline mt-auto"
           >
-            View full profile →
+            Explore more →
           </Link>
         </div>
       </div>

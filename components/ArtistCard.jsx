@@ -1,7 +1,7 @@
 import Tag from './ui/Tag'
 
 export default function ArtistCard({ artist, onSelect }) {
-  const { name, slug, bio, discipline = [], stats = {}, profileImage } = artist
+  const { name, slug, bio, discipline = [], stats = {}, profileImage, social = {}, email } = artist
 
   return (
     <div className="overflow-hidden rounded-lg border border-subtle bg-card group transition-all duration-200 hover:border-border hover:shadow-sm flex flex-col">
@@ -37,9 +37,17 @@ export default function ArtistCard({ artist, onSelect }) {
       <div className="px-4 pb-4">
         <div className="border-t border-subtle pt-3 flex items-center justify-between">
           <div className="flex items-center gap-3 text-[11px] font-body text-text-muted">
-            <span className="hover:text-brand cursor-pointer transition-colors">social</span>
+            {social.instagram ? (
+              <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-brand transition-colors">social</a>
+            ) : (
+              <span className="opacity-30 cursor-default">social</span>
+            )}
             <span>·</span>
-            <span className="hover:text-brand cursor-pointer transition-colors">contact</span>
+            {email ? (
+              <a href={`mailto:${email}`} className="hover:text-brand transition-colors">contact</a>
+            ) : (
+              <span className="opacity-30 cursor-default">contact</span>
+            )}
           </div>
         </div>
         <button

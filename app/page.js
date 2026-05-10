@@ -22,6 +22,7 @@ const MOCK_ARTISTS = [
     bio: 'Visual artist and photographer exploring urban landscapes and identity.',
     discipline: ['Visual Art', 'Photography'],
     stats: { releases: 8, listeners: 142000 }, profileImage: null, featured: true,
+    email: 'contact.manueltorres@gmail.com',
     social: { instagram: 'https://instagram.com', website: 'https://example.com' },
   },
   {
@@ -63,7 +64,7 @@ const MOCK_ARTISTS = [
 
 export default async function HomePage() {
   const artists = await getFeaturedArtists()
-  const list = artists.length > 0 ? artists : MOCK_ARTISTS
+  const list = (artists.length > 0 ? artists : MOCK_ARTISTS).slice(0, 3)
 
   return (
     <>

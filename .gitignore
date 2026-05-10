@@ -31,6 +31,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# seed scripts (contain db credentials)
+/scripts
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
