@@ -27,7 +27,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${courierPrime.variable} ${inter.variable} ${cyGrotesk.variable}`}>
-      <body className="bg-primary text-text-primary font-body min-h-screen antialiased cursor-none">
+      <body className="bg-primary text-text-primary font-body min-h-screen antialiased md:cursor-none">
         <CustomCursor />
         {children}
       </body>

@@ -6,6 +6,7 @@ export default function CustomCursor() {
   const dot = useRef(null)
 
   useEffect(() => {
+    if (window.matchMedia('(pointer: coarse)').matches) return
     const move = (e) => {
       if (!dot.current) return
       dot.current.style.transform = `translate(${e.clientX - 6}px, ${e.clientY - 6}px)`

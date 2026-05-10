@@ -85,7 +85,7 @@ export default async function HomePage() {
       {/* ── About ──────────────────────────────────────────── */}
       <section id="about" className="bg-primary border-b border-subtle">
         <div className="max-w-content mx-auto px-4 lg:px-page py-20">
-          <h2 className="font-heading text-[36px] sm:text-[44px] leading-[1.0] text-text-primary uppercase mb-6">
+          <h2 className="font-heading text-[26px] sm:text-[44px] leading-[1.0] text-text-primary uppercase mb-6">
             alwayscreating
           </h2>
           <p className="font-heading text-[18px] sm:text-[22px] leading-[1.5] text-text-primary max-w-3xl">
@@ -116,7 +116,7 @@ export default async function HomePage() {
       <div className="bg-primary border-y border-subtle overflow-hidden py-5">
         <div className="marquee-track">
           {Array.from({ length: 10 }).map((_, i) => (
-            <span key={i} className="font-heading text-[48px] sm:text-[64px] text-text-primary uppercase shrink-0 pr-10 leading-none select-none">
+            <span key={i} className="font-heading text-[32px] sm:text-[48px] lg:text-[64px] text-text-primary uppercase shrink-0 pr-8 leading-none select-none">
               alwayscreating <span className="text-brand">✦</span>&nbsp;
             </span>
           ))}
