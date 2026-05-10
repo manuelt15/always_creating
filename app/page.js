@@ -30,20 +30,21 @@ export default async function HomePage() {
           {/* Left */}
           <div>
             {/* Eyebrow pill */}
-            <div className="inline-flex items-center gap-2 border border-text-primary/20 rounded-full px-4 py-1.5 mb-8">
+            <div style={{ animationDelay: '0ms' }} className="animate-fade-up inline-flex items-center gap-2 border border-text-primary/20 rounded-full px-4 py-1.5 mb-8">
               <span className="text-brand text-[10px]">✦</span>
               <span className="font-body text-[10px] tracking-[1px] uppercase text-text-primary">Artists doing great things</span>
             </div>
 
-            <h1 className="font-heading text-[44px] sm:text-[54px] lg:text-[64px] leading-[1.0] text-text-primary mb-7">
+            <h1 style={{ animationDelay: '100ms' }} className="animate-fade-up font-heading text-[44px] sm:text-[54px] lg:text-[64px] leading-[1.0] text-text-primary mb-7">
               You are not your work. You are how you create.
             </h1>
-            <p className="font-body text-[13px] leading-[22px] text-text-secondary max-w-sm mb-10">
+            <p style={{ animationDelay: '200ms' }} className="animate-fade-up font-body text-[13px] leading-[22px] text-text-secondary max-w-sm mb-10">
               A curated space for discovering creatives. Build a living identity across music, visual art, and beyond.
             </p>
             <Link
               href="/artists"
-              className="inline-flex items-center gap-2 font-body font-bold text-[13px] bg-text-primary text-primary rounded-[8px] px-6 py-3 hover:opacity-80 active:scale-[0.98] transition-all duration-150"
+              style={{ animationDelay: '300ms' }}
+              className="animate-fade-up inline-flex items-center gap-2 font-body font-bold text-[13px] bg-text-primary text-primary rounded-[8px] px-6 py-3 hover:opacity-80 active:scale-[0.98] transition-all duration-150"
             >
               Explore all artists →
             </Link>

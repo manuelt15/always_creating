@@ -1,10 +1,13 @@
 import Tag from './ui/Tag'
 
-export default function ArtistCard({ artist, onSelect }) {
+export default function ArtistCard({ artist, onSelect, index = 0 }) {
   const { name, slug, bio, discipline = [], stats = {}, profileImage, social = {}, email } = artist
 
   return (
-    <div className="overflow-hidden rounded-lg border border-subtle bg-card group transition-all duration-200 hover:border-border hover:shadow-sm flex flex-col">
+    <div
+      className="animate-fade-up overflow-hidden rounded-lg border border-subtle bg-card group transition-all duration-200 hover:border-border hover:shadow-sm flex flex-col"
+      style={{ animationDelay: `${index * 120}ms` }}
+    >
       {/* Image */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-primary">
         {profileImage ? (
@@ -27,7 +30,9 @@ export default function ArtistCard({ artist, onSelect }) {
 
       {/* Body */}
       <div className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-heading text-[18px] text-text-primary leading-tight">{name}</h3>
+        <h3 className="font-heading text-[18px] text-text-primary leading-tight">
+          <span className="name-underline">{name}</span>
+        </h3>
         {bio && (
           <p className="text-[12px] font-body text-text-secondary line-clamp-3 leading-[1.6]">{bio}</p>
         )}

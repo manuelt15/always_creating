@@ -25,9 +25,9 @@ export default function ArtistCardGrid({ artists }) {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {artists.map((artist) => (
+        {artists.map((artist, i) => (
           <ViewTransition key={artist._id || artist.slug} default="none">
-            <ArtistCard artist={artist} onSelect={openOverlay} />
+            <ArtistCard artist={artist} onSelect={openOverlay} index={i} />
           </ViewTransition>
         ))}
       </div>

@@ -105,6 +105,37 @@
   animation: var(--duration-exit) ease-in both scale-down;
 }
 
+/* ─── Entrance animations ───────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Card name underline sweep */
+.name-underline {
+  position: relative;
+  display: inline-block;
+}
+.name-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .name-underline::after {
+  transform: scaleX(1);
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),
