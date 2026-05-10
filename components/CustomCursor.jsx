@@ -18,7 +18,7 @@ export default function CustomCursor() {
   return (
     <div
       ref={dot}
-      className="fixed top-0 left-0 w-3 h-3 rounded-full bg-brand pointer-events-none z-[9999] transition-transform duration-75 ease-out"
+      className="hidden md:block fixed top-0 left-0 w-3 h-3 rounded-full bg-brand pointer-events-none z-[9999] transition-transform duration-75 ease-out"
     />
   )
 }
