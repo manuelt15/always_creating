@@ -15,7 +15,7 @@ export async function POST(request) {
     await connectDB()
     await ContactMessage.create({ name, email, message })
 
-    await Promise.all([
+    Promise.all([
       resend.emails.send({
         from: FROM_EMAIL,
         to:   email,
@@ -28,7 +28,7 @@ export async function POST(request) {
         subject: `New message from ${name}`,
         html: contactNotificationEmail({ name, email, message }),
       }),
-    ])
+    ]).catch(() => {})
 
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (err) {

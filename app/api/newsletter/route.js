@@ -15,12 +15,12 @@ export async function POST(request) {
     await connectDB()
     await NewsletterSubscriber.create({ email })
 
-    await resend.emails.send({
+    resend.emails.send({
       from: FROM_EMAIL,
       to:   email,
       subject: 'You\'re in — alwayscreating',
       html: newsletterConfirmationEmail(),
-    })
+    }).catch(() => {})
 
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (err) {
