@@ -22,6 +22,27 @@
     white-space: nowrap;
   }
 
+  /* Refined marquee: slower, fade edges, pause on hover */
+  .marquee-refined {
+    display: flex;
+    width: max-content;
+    animation: marquee 42s linear infinite;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+  }
+
   @keyframes marquee {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
@@ -51,6 +72,52 @@
   --color-text-primary:   #f5f4f0;
   --color-text-secondary: #aaaaaa;
   --color-text-muted:     #666666;
+}
+
+/* ─── shadcn semantic tokens (mapped to the palette above) ─── */
+:root {
+  --background:           48 20% 95%;
+  --foreground:           0 0% 7%;
+  --card:                 0 0% 100%;
+  --card-foreground:      0 0% 7%;
+  --popover:              0 0% 100%;
+  --popover-foreground:   0 0% 7%;
+  --primary:             212 82% 49%;
+  --primary-foreground:   0 0% 100%;
+  --secondary:           45 11% 86%;
+  --secondary-foreground: 0 0% 7%;
+  --muted:               45 11% 86%;
+  --muted-foreground:    0 0% 53%;
+  --accent:              45 11% 86%;
+  --accent-foreground:   0 0% 7%;
+  --destructive:         0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border:              45 11% 86%;
+  --input:               48 8% 76%;
+  --ring:                212 82% 49%;
+  --radius:              0.5rem;
+}
+
+.dark {
+  --background:           0 0% 7%;
+  --foreground:           48 20% 95%;
+  --card:                 0 0% 10%;
+  --card-foreground:      48 20% 95%;
+  --popover:              0 0% 10%;
+  --popover-foreground:   48 20% 95%;
+  --primary:             212 82% 49%;
+  --primary-foreground:   0 0% 100%;
+  --secondary:           0 0% 13%;
+  --secondary-foreground: 48 20% 95%;
+  --muted:               0 0% 13%;
+  --muted-foreground:    0 0% 40%;
+  --accent:              0 0% 13%;
+  --accent-foreground:   48 20% 95%;
+  --destructive:         0 62% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --border:              0 0% 13%;
+  --input:               0 0% 20%;
+  --ring:                212 82% 49%;
 }
 
 /* ─── View Transitions ─────────────────────────────────────── */

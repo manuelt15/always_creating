@@ -1,7 +1,7 @@
 'use client'
 
 import Tag from './ui/Tag'
-import Button from './ui/Button'
+import { Button } from '@/components/ui/button'
 
 export default function ArtistProfile({ artist }) {
   const { name, bio, discipline = [], stats = {}, profileImage } = artist
