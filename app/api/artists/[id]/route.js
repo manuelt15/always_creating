@@ -4,8 +4,9 @@ import Artist from '@/lib/models/Artist'
 
 export async function GET(request, { params }) {
   try {
+    const { id } = await params
     await connectDB()
-    const artist = await Artist.findOne({ slug: params.id }).lean()
+    const artist = await Artist.findOne({ slug: id }).lean()
     if (!artist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     return NextResponse.json(artist)
   } catch (err) {

@@ -2,13 +2,15 @@ import Navbar from '@/components/Navbar'
 import ArtistProfile from '@/components/ArtistProfile'
 import ContactForm from '@/components/ContactForm'
 import { notFound } from 'next/navigation'
+import { connectDB } from '@/lib/mongodb'
+import Artist from '@/lib/models/Artist'
 
 async function getArtist(slug) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    const res = await fetch(`${baseUrl}/api/artists/${slug}`, { next: { revalidate: 60 } })
-    if (!res.ok) return null
-    return res.json()
+    await connectDB()
+    const artist = await Artist.findOne({ slug }).lean()
+    if (!artist) return null
+    return { ...artist, _id: artist._id?.toString?.() || artist._id }
   } catch {
     return null
   }
