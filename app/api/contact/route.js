@@ -3,13 +3,16 @@ import { connectDB } from '@/lib/mongodb'
 import ContactMessage from '@/lib/models/ContactMessage'
 import { resend, FROM_EMAIL, NOTIFY_EMAIL } from '@/lib/resend'
 import { contactConfirmationEmail, contactNotificationEmail } from '@/lib/emails'
+import { validateContact } from '@/lib/validation'
 
 export async function POST(request) {
   try {
-    const { name, email, message } = await request.json()
+    const body = await request.json()
+    const { name, email, message } = body || {}
 
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 })
+    const validation = validateContact(body)
+    if (!validation.ok) {
+      return NextResponse.json({ error: validation.error }, { status: 400 })
     }
 
     await connectDB()

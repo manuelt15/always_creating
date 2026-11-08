@@ -3,13 +3,16 @@ import { connectDB } from '@/lib/mongodb'
 import NewsletterSubscriber from '@/lib/models/NewsletterSubscriber'
 import { resend, FROM_EMAIL } from '@/lib/resend'
 import { newsletterConfirmationEmail } from '@/lib/emails'
+import { validateEmail } from '@/lib/validation'
 
 export async function POST(request) {
   try {
-    const { email } = await request.json()
+    const body = await request.json()
+    const { email } = body || {}
 
-    if (!email) {
-      return NextResponse.json({ error: 'Email is required' }, { status: 400 })
+    const validation = validateEmail(email)
+    if (!validation.ok) {
+      return NextResponse.json({ error: validation.error }, { status: 400 })
     }
 
     await connectDB()
