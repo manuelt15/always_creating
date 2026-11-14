@@ -4,10 +4,32 @@ import ContactMessage from '@/lib/models/ContactMessage'
 import { resend, FROM_EMAIL, NOTIFY_EMAIL } from '@/lib/resend'
 import { contactConfirmationEmail, contactNotificationEmail } from '@/lib/emails'
 import { validateContact } from '@/lib/validation'
+import { claveCliente, comprobarLimite } from '@/lib/rate-limit'
+
+const LIMITE_BYTES = 10_000
 
 export async function POST(request) {
+  const limite = comprobarLimite(claveCliente(request, 'contacto'))
+  if (!limite.ok) {
+    return NextResponse.json(
+      { error: 'Too many requests' },
+      { status: 429, headers: { 'Retry-After': String(limite.reintentarEn) } },
+    )
+  }
+
   try {
-    const body = await request.json()
+    const bruto = await request.text()
+    if (bruto.length > LIMITE_BYTES) {
+      return NextResponse.json({ error: 'Message too long' }, { status: 413 })
+    }
+
+    let body
+    try {
+      body = JSON.parse(bruto)
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
+
     const { name, email, message } = body || {}
 
     const validation = validateContact(body)

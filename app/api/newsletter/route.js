@@ -4,10 +4,32 @@ import NewsletterSubscriber from '@/lib/models/NewsletterSubscriber'
 import { resend, FROM_EMAIL } from '@/lib/resend'
 import { newsletterConfirmationEmail } from '@/lib/emails'
 import { validateEmail } from '@/lib/validation'
+import { claveCliente, comprobarLimite } from '@/lib/rate-limit'
+
+const LIMITE_BYTES = 2_000
 
 export async function POST(request) {
+  const limite = comprobarLimite(claveCliente(request, 'newsletter'), { limite: 3 })
+  if (!limite.ok) {
+    return NextResponse.json(
+      { error: 'Too many requests' },
+      { status: 429, headers: { 'Retry-After': String(limite.reintentarEn) } },
+    )
+  }
+
   try {
-    const body = await request.json()
+    const bruto = await request.text()
+    if (bruto.length > LIMITE_BYTES) {
+      return NextResponse.json({ error: 'Payload too large' }, { status: 413 })
+    }
+
+    let body
+    try {
+      body = JSON.parse(bruto)
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
+
     const { email } = body || {}
 
     const validation = validateEmail(email)
