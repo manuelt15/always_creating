@@ -13,6 +13,7 @@ export async function GET(request) {
 
     return NextResponse.json(artists)
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error('Artists error:', err.message)
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
   }
 }

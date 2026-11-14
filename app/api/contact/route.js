@@ -39,6 +39,7 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error('Contact error:', err.message)
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
   }
 }

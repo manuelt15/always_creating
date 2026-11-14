@@ -34,6 +34,7 @@ export async function POST(request) {
     if (err.code === 11000) {
       return NextResponse.json({ error: 'Already subscribed' }, { status: 409 })
     }
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error('Newsletter error:', err.message)
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
   }
 }

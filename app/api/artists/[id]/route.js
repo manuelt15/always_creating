@@ -10,6 +10,7 @@ export async function GET(request, { params }) {
     if (!artist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     return NextResponse.json(artist)
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error('Artist error:', err.message)
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
   }
 }
