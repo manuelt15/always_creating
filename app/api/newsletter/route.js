@@ -54,7 +54,8 @@ export async function POST(request) {
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (err) {
     if (err.code === 11000) {
-      return NextResponse.json({ error: 'Already subscribed' }, { status: 409 })
+      // Misma respuesta que un alta nueva: no revelar si el correo ya estaba suscrito.
+      return NextResponse.json({ success: true }, { status: 201 })
     }
     console.error('Newsletter error:', err.message)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
