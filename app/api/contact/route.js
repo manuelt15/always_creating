@@ -29,7 +29,7 @@ export async function POST(request) {
         resend.emails.send({
           from: FROM_EMAIL,
           to:   NOTIFY_EMAIL,
-          subject: `New message from ${name}`,
+          subject: `New message from ${name.replace(/[\r\n]+/g, ' ')}`,
           html: contactNotificationEmail({ name, email, message }),
         }),
       ])
