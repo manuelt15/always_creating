@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
+import { randomUUID } from 'node:crypto'
 import { connectDB } from '@/lib/mongodb'
 import ContactMessage from '@/lib/models/ContactMessage'
-import { resend, FROM_EMAIL, NOTIFY_EMAIL } from '@/lib/resend'
-import { contactConfirmationEmail, contactNotificationEmail } from '@/lib/emails'
+import { resend, FROM_EMAIL } from '@/lib/resend'
+import { contactVerifyEmail } from '@/lib/emails'
 import { validateContact } from '@/lib/validation'
 import { claveCliente, comprobarLimite } from '@/lib/rate-limit'
 
@@ -37,29 +38,25 @@ export async function POST(request) {
       return NextResponse.json({ error: validation.error }, { status: 400 })
     }
 
+    const token = randomUUID()
+
     await connectDB()
-    await ContactMessage.create({ name, email, message })
+    await ContactMessage.create({ name, email, message, token })
 
     try {
-      await Promise.all([
-        resend.emails.send({
-          from: FROM_EMAIL,
-          to:   email,
-          subject: 'We got your message — alwayscreating',
-          html: contactConfirmationEmail({ name }),
-        }),
-        resend.emails.send({
-          from: FROM_EMAIL,
-          to:   NOTIFY_EMAIL,
-          subject: `New message from ${name.replace(/[\r\n]+/g, ' ')}`,
-          html: contactNotificationEmail({ name, email, message }),
-        }),
-      ])
+      const url = `${new URL(request.url).origin}/api/contact/confirm?token=${token}`
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to:   email,
+        subject: 'Confirm your message — alwayscreating',
+        html: contactVerifyEmail({ name, url }),
+      })
     } catch (emailErr) {
       console.error('Email error:', emailErr.message)
     }
 
-    return NextResponse.json({ success: true }, { status: 201 })
+    // Nada se entrega hasta que el remitente confirme desde su propio correo.
+    return NextResponse.json({ success: true, pending: true }, { status: 201 })
   } catch (err) {
     console.error('Contact error:', err.message)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
