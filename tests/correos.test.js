@@ -9,23 +9,22 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const leer = (ruta) => readFileSync(join(root, ruta), 'utf8');
 const ejemplo = { name: 'Ana <b>', email: 'ana@example.com', kind: 'comment', about: 'Campo dither', message: 'Hola & <script>', siteUrl: 'https://example.com' };
 
-test('los tres correos escapan lo que escribe la persona', () => {
-  for (const html of [
-    contactVerifyEmail({ ...ejemplo, url: 'https://example.com/api/contact/confirm?token=x' }),
-    contactConfirmationEmail(ejemplo),
-    contactNotificationEmail(ejemplo),
-  ]) {
+test('los correos de después de confirmar escapan lo que escribe la persona', () => {
+  for (const html of [contactConfirmationEmail(ejemplo), contactNotificationEmail(ejemplo)]) {
     assert.doesNotMatch(html, /<script>|Ana <b>/);
     assert.match(html, /Hola &amp; &lt;script&gt;/);
     assert.match(html, /https:\/\/example\.com\/email-band\.png/);
   }
 });
 
-test('el correo de confirmación lleva el enlace y lo que se envió', () => {
+test('el correo previo a confirmar no lleva nada escrito por quien envía', () => {
   const html = contactVerifyEmail({ ...ejemplo, url: 'https://example.com/api/contact/confirm?token=abc' });
   assert.match(html, /token=abc/);
   assert.match(html, /Campo dither/);
-  assert.match(html, /Comentario/);
+  assert.doesNotMatch(html, /Ana|Hola|script/);
+  const ruta = readFileSync(join(root, 'app/api/contact/route.js'), 'utf8');
+  const llamada = ruta.slice(ruta.indexOf('contactVerifyEmail({'), ruta.indexOf('}),', ruta.indexOf('contactVerifyEmail({')));
+  assert.doesNotMatch(llamada, /\bname\b|\bmessage\b/);
 });
 
 test('los fallos de Resend no pasan en silencio', () => {

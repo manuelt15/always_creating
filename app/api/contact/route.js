@@ -50,11 +50,9 @@ export async function POST(request) {
       to: email,
       subject: 'Confirma tu mensaje, always creating',
       html: contactVerifyEmail({
-        name,
         url: `${siteUrl}/api/contact/confirm?token=${token}`,
         kind,
         about: getExperiment(about)?.title || null,
-        message,
         siteUrl,
       }),
     })

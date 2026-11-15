@@ -78,7 +78,7 @@ Todo vive en el repo. El registro es `lib/experiments.js`: cada entrada es una c
 
 El formulario usa doble opt-in: nada te llega hasta que quien escribe confirma que el correo es suyo.
 
-1. `POST /api/contact` valida, guarda el mensaje en MongoDB sin confirmar (con su tipo, `idea` o `comment`, y el experimento en `about` si lo hay) y envía **a quien escribe** el correo "Confirma tu mensaje", con un botón de confirmación y la copia de lo que ha mandado.
+1. `POST /api/contact` valida, guarda el mensaje en MongoDB sin confirmar (con su tipo, `idea` o `comment`, y el experimento en `about` si lo hay) y envía **a quien escribe** el correo "Confirma tu mensaje", con un botón de confirmación, el tipo y el experimento. No incluye nada de lo que escribió (ni nombre ni mensaje): sale antes de verificar que el correo es suyo y así nadie puede usarlo para mandar texto propio a un correo ajeno.
 2. Al pulsar el botón, `GET /api/contact/confirm` marca el mensaje como confirmado (el enlace sirve una sola vez) y envía dos correos:
    - **A quien escribe**: "Tu idea / Tu comentario ha llegado", con la copia de su mensaje.
    - **A `NOTIFY_EMAIL`**: "Idea / Comentario de {nombre}", con nombre, correo, tipo, experimento y mensaje. Lleva `reply-to` con el correo de quien escribió, así que "Responder" le contesta directamente.
