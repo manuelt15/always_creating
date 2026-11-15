@@ -30,7 +30,7 @@ export const metadata = {
     template: '%s / always creating',
   },
   description:
-    'A shared practice by Manuel and Moya. Two artists, similar instincts, one room that stays open to more.',
+    'An open room for artists. Work shown while it is still becoming, and a standing invitation to make things together.',
 }
 
 export const viewport = {

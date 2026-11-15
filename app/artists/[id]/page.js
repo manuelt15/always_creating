@@ -51,7 +51,7 @@ export default async function ArtistProfilePage({ params }) {
                 Reach the room.
               </h2>
               <p className="mt-4 max-w-[34ch] text-[14px] leading-[1.65] text-ash">
-                One message reaches Manuel and Moya.
+                One message reaches the room.
               </p>
             </div>
             <div className="lg:col-span-7 lg:col-start-6">
