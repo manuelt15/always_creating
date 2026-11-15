@@ -41,3 +41,17 @@ permitido) no lanza. El `try/catch` que había nunca registraba nada y la respue
 Es el remitente de pruebas de Resend. Con él, quien rellena el formulario no recibe el enlace de
 confirmación y su mensaje nunca llega. **`FROM_EMAIL` tiene que ser del dominio verificado**
 (`alwayscreating.es`).
+
+## El correo previo a confirmar no puede llevar texto del formulario
+
+Corrección: la revisión automática de seguridad marcó el correo "Confirma tu mensaje" porque incluía
+nombre y mensaje. Causa: sale antes de verificar que la dirección es de quien escribe, así que servía
+para mandar texto propio a un correo ajeno desde nuestro dominio. Fix: solo valores cerrados (tipo y
+título del experimento). **Regla: en un doble opt-in, lo que el usuario escribe solo viaja después de
+confirmar.** Hay un test que lo vigila.
+
+## Las convenciones de archivos de Next 16 no siempre hacen lo que dice la documentación
+
+`opengraph-image.alt.txt` no se aplica (la imagen se declara a mano en `app/layout.js`), un `.ico` con
+PNG dentro tiene que ser RGBA o el build falla, y los archivos de convención nuevos no aparecen en
+`next dev` sin reiniciar. **Se verifica en el HTML del build, no en el servidor de desarrollo.**
