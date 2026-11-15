@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { Field, FieldError, FieldLabel } from '@ui-sdk/react/field'
+import { Input } from '@ui-sdk/react/input'
+import { Textarea } from '@ui-sdk/react/textarea'
 import { validateEmail } from '@/lib/validation'
 
 const FIELDS = ['name', 'email', 'message']
@@ -68,73 +71,61 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
       <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="contact-name" className="field-label">
-            Name
-          </label>
-          <input
+        <Field name="name" invalid={errors.name ? true : undefined} className="block">
+          <FieldLabel className="field-label">Name</FieldLabel>
+          <Input
             id="contact-name"
             name="name"
             type="text"
             placeholder="Your full name"
             value={form.name}
             onChange={handleChange}
-            aria-invalid={errors.name ? 'true' : undefined}
-            aria-describedby={errors.name ? 'contact-name-error' : undefined}
             autoComplete="name"
-            className="field"
+            className="field h-auto"
           />
           {errors.name && (
-            <p id="contact-name-error" className="mt-2 text-[11px] leading-[1.4] text-lime">
+            <FieldError className="mt-2 text-[11px] leading-[1.4] text-lime">
               {errors.name}
-            </p>
+            </FieldError>
           )}
-        </div>
-        <div>
-          <label htmlFor="contact-email" className="field-label">
-            Email
-          </label>
-          <input
+        </Field>
+        <Field name="email" invalid={errors.email ? true : undefined} className="block">
+          <FieldLabel className="field-label">Email</FieldLabel>
+          <Input
             id="contact-email"
             name="email"
             type="email"
             placeholder="your@email.com"
             value={form.email}
             onChange={handleChange}
-            aria-invalid={errors.email ? 'true' : undefined}
-            aria-describedby={errors.email ? 'contact-email-error' : undefined}
             autoComplete="email"
-            className="field"
+            className="field h-auto"
           />
           {errors.email && (
-            <p id="contact-email-error" className="mt-2 text-[11px] leading-[1.4] text-lime">
+            <FieldError className="mt-2 text-[11px] leading-[1.4] text-lime">
               {errors.email}
-            </p>
+            </FieldError>
           )}
-        </div>
+        </Field>
       </div>
 
-      <div>
-        <label htmlFor="contact-message" className="field-label">
-          Message
-        </label>
-        <textarea
+      <Field name="message" invalid={errors.message ? true : undefined} className="block">
+        <FieldLabel className="field-label">Message</FieldLabel>
+        <Textarea
           id="contact-message"
           name="message"
           placeholder="Tell us what you are working on"
           value={form.message}
           onChange={handleChange}
-          aria-invalid={errors.message ? 'true' : undefined}
-          aria-describedby={errors.message ? 'contact-message-error' : undefined}
           rows={5}
           className="field resize-none"
         />
         {errors.message && (
-          <p id="contact-message-error" className="mt-2 text-[11px] leading-[1.4] text-lime">
+          <FieldError className="mt-2 text-[11px] leading-[1.4] text-lime">
             {errors.message}
-          </p>
+          </FieldError>
         )}
-      </div>
+      </Field>
 
       {status === 'error' && (
         <p role="alert" className="border-l border-paper pl-3 text-[13px] leading-[1.5] text-paper">

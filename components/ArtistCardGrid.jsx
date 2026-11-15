@@ -8,10 +8,10 @@ import ArtistOverlay from './ArtistOverlay'
 export default function ArtistCardGrid({ artists, variant = 'grid' }) {
   const [selected, setSelected] = useState(null)
 
-  const openOverlay = (artist) => {
+  const openOverlay = (artist, trigger) => {
     startTransition(() => {
       addTransitionType('open-overlay')
-      setSelected(artist)
+      setSelected({ artist, trigger })
     })
   }
 
@@ -48,7 +48,11 @@ export default function ArtistCardGrid({ artists, variant = 'grid' }) {
           exit={{ 'close-overlay': 'scale-out', default: 'none' }}
           default="none"
         >
-          <ArtistOverlay artist={selected} onClose={closeOverlay} />
+          <ArtistOverlay
+            artist={selected.artist}
+            returnTo={selected.trigger}
+            onClose={closeOverlay}
+          />
         </ViewTransition>
       )}
     </>

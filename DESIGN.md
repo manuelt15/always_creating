@@ -4,9 +4,11 @@ Sistema visual del sitio, leído del código real: `app/globals.css`, `tailwind.
 
 La identidad es dither / 1-bit / CRT: papel y tinta, tramas de puntos, un acento lima y superficies de grano. Nada de degradados suaves, cristales ni tarjetas redondeadas. Esquinas rectas, tipografía editorial y una sola página que se lee de arriba abajo.
 
+El comportamiento de los diálogos y de los campos viene de `@ui-sdk/react`; los estilos son nuestros. ui-sdk resuelve foco, Escape, scroll bloqueado y relaciones ARIA, no la capa visual.
+
 ## Paleta
 
-Solo estos cuatro colores. No hay modo claro ni tokens alternativos.
+Cuatro colores base y sus tokens de línea y superficie. No hay modo claro ni tokens alternativos.
 
 | Token | Hex | Uso | Contraste |
 | --- | --- | --- | --- |
@@ -35,7 +37,7 @@ Reglas de color:
 
 - El lima nunca va como texto sobre papel ni sobre una superficie clara. Solo funciona contra `ink` o como fondo con texto `ink`.
 - El gris de etiquetas es `ash`, nunca papel al 60 %. La opacidad no se usa para texto pequeño.
-- El rojo no existe en la paleta. Los estados de error se escriben en `paper` con un borde de 1 px.
+- El rojo no existe en la paleta. Los errores de campo se escriben en `lime`; el error de servidor, en `paper` con un borde izquierdo de 1 px.
 - No se inventan hex intermedios. Si hace falta un tono, se resuelve con la textura, no con un color nuevo.
 
 ## Tipografía
@@ -67,18 +69,22 @@ Reglas:
 
 ## Dither: dónde y cómo
 
-Assets en `public/dither/`, generados fuera del repo. No se regeneran ni se sustituyen desde el código:
+Assets en `public/dither/`, generados con `tools/generate-dither.py` (Pillow, matriz Bayer 8x8, dos tintas). El script es determinista y se ejecuta desde la raíz del repo:
+
+```bash
+python3 tools/generate-dither.py
+```
 
 | Archivo | Tamaño | Uso |
 | --- | --- | --- |
-| `manuel-900.png` / `manuel-480.png` | 900x1125 / 480x600 | Retrato hero y ficha de Manuel, 4:5 |
-| `moya-900.png` / `moya-480.png` | 900x1125 / 480x600 | Retrato hero y ficha de Moya, 4:5 |
-| `degradado-lima.png` | 1000x420 | Fondo dither de la sección de colaboración |
+| `manuel-900.png` / `manuel-480.png` | 900x1125 / 480x600 | Ficha de Manuel en roster y perfil, 4:5 |
+| `moya-900.png` / `moya-480.png` | 900x1125 / 480x600 | Ficha de Moya en roster y perfil, 4:5 |
+| `degradado-lima.png` | 1000x420 | Respaldo estático del hero y fondo dither de la sección de colaboración |
 | `grano.png` | 256x256 | Grano repetible en superficies |
 
 Mapa por sección de la home:
 
-1. **Hero (001)**: los dos retratos en `picture` con `srcset` 480/900 y `sizes` por breakpoint. Trama de puntos CSS (`.dither-field`) en la mitad derecha del fondo y scanlines CRT sobre cada retrato. Ningún texto encima de la imagen.
+1. **Hero (001)**: campo dither interactivo en canvas (`components/DitherField.jsx`) sobre el titular. Usa la misma matriz Bayer 8x8, se pinta en lima y responde al puntero con una luz que sigue el cursor. Debajo hay una capa estática (`degradado-lima.png` al 28 %) para que la textura exista antes de que arranque el canvas, y un velo (`.dither-veil`) que oscurece la parte superior y los laterales. La cabecera se apoya encima del campo, sin línea ni fondo propio. Ningún texto pequeño cae sobre dither crudo: el velo superior mantiene el contraste.
 2. **Manifiesto (002)**: sin retratos. La cita grande "Keep the process visible." va sobre una banda de grano (`.grain`, 9 %) que ocupa todo el ancho. El texto es de 32 a 64 px, nunca copy pequeño.
 3. **Roster (003)**: retratos 1-bit con `srcset`, scanlines y regla de puntos (`.dither-rule`) bajo cada ficha. Las etiquetas y biografías están fuera de la imagen, sobre `ink`.
 4. **Colaboración (004)**: `degradado-lima.png` a sangre, 160 px en móvil y 240 px en escritorio, tintado a lima con `background-blend-mode: multiply` y desvanecido inferior con `.dither-fade`. El contenido va en una tarjeta `ink` opaca: el dither es fondo, no fondo de texto.
@@ -91,33 +97,50 @@ Reglas del dither:
 - El grano vive en superficies decorativas, por debajo del contenido y a un máximo del 9 % de opacidad. Si una superficie lleva texto pequeño, se parte en dos: fondo texturizado y bloque sólido para el texto.
 - Las scanlines solo van sobre imágenes.
 - Las tramas CSS usan el mismo paso de 4 px o 5 px que los PNG para que el sistema se lea como uno solo.
-- El dither no sustituye un borde funcional. Los bordes de 1 px siguen ahí.
+- El dither no sustituye un borde funcional. Los bordes de 1 px siguen ahí, salvo la separación cabecera/hero, que se elimina a propósito.
+
+Contraste sobre el campo del hero:
+
+- La nav solo se apoya en la franja superior que cubre `.dither-veil`: de `ink` al 94 % arriba a `ink` al 82 % a 96 px. Ahí `ash` se mantiene por encima de 5.6:1 y `paper` por encima de 15.8:1.
+- El botón lima lleva texto `ink` (17.07:1). Nunca se invierte a texto lima sobre el campo.
+- Fuera de esa franja no hay texto de interfaz sobre el dither. El titular y el copy del hero van sobre el velo lateral e inferior, que mantiene el fondo cerca de `ink`.
 
 ## Layout y responsive
 
 - Contenedor `.shell`: máximo 1440 px, padding 20 px en móvil y 32 px desde 640 px.
 - Rejilla editorial de 12 columnas desde 1024 px. Por debajo, todo se apila.
-- Hero: titular a ancho completo, dos retratos en dos columnas incluso a 360 px. La segunda figura baja 32 px en móvil y 56 px en escritorio.
-- Navegación: barra superior fija. Los enlaces pasan a una fila desplazable por debajo de 1024 px.
+- Hero: titular a ancho completo sobre el campo dither. La cabecera ocupa la franja superior con el velo de tinta detrás. Sin retratos en el hero.
+- Cabecera: integrada en el hero sobre el campo dither, sin borde inferior ni fondo sólido. No es fija: se desplaza con el hero. En móvil, la fila de secciones queda debajo del wordmark sin línea divisoria y se desplaza en horizontal. En el resto de rutas la cabecera sigue en el flujo, sobre `ink`.
 - Roster: una columna en móvil, dos desde 768 px.
 - Contacto: formulario y newsletter comparten un solo marco; se apilan por debajo de 1024 px.
 - Ancho mínimo verificado: 360 px. Sin scroll horizontal.
 
 ## Componentes
 
-- `Navbar`: server component, sin toggle de tema. Enlaces a anclas y al índice existente.
+- `Navbar`: server component, sin toggle de tema. En la home se superpone al hero, absoluta y transparente; en el resto de rutas queda en el flujo sobre `ink`. Enlaces a anclas y al índice existente. El menú móvil es una fila de anclas con scroll horizontal, sin línea de separación.
 - `SectionMeta`: número, título y nota al margen. La numeración es la columna vertebral de la página.
-- `ArtistCardGrid`: cliente, gestiona el artista seleccionado y la View Transition.
+- `ArtistCardGrid`: cliente, gestiona el artista seleccionado y la View Transition. Guarda también el botón que abrió el perfil para devolverle el foco.
 - `ArtistCard`: retrato, índice, nombre, disciplina y acción. Variante `roster` para la home y `grid` para `/artists`.
-- `ArtistOverlay`: diálogo modal con retrato, biografía, disciplinas y enlaces. Cierra con Escape, bloquea el scroll y devuelve el foco al botón de cierre.
-- `ContactForm` y `NewsletterForm`: misma lógica de red y doble opt-in que antes. Solo cambió la capa visual.
+- `ArtistOverlay`: usa `Dialog`, `DialogBackdrop`, `DialogContent`, `DialogTitle` y `DialogClose` de `@ui-sdk/react/dialog`, con las mismas clases y el mismo layout que antes. ui-sdk aporta cierre con Escape, foco atrapado, bloqueo del scroll de fondo y retorno del foco al botón que abrió el perfil.
+- `ContactForm` y `NewsletterForm`: misma lógica de red y doble opt-in que antes. Etiqueta, control y error van dentro de `Field` de `@ui-sdk/react`, que conecta `aria-describedby` y `aria-invalid`. Los textos y el orden visual no cambian.
 - `Footer`: cierre editorial con wordmark a sangre.
+
+## ui-sdk
+
+La librería aporta comportamiento, no aspecto. Los estilos siguen saliendo de `app/globals.css` y de las clases Tailwind del sitio.
+
+- **Diálogo**: `ArtistOverlay` monta `Dialog` en modo controlado y cierra llamando a `onClose`. `DialogContent` conserva el marco, el ancho y el scroll del panel anterior. `DialogClose` sustituye a los botones manuales.
+- **Foco**: `Dialog` atrapa el foco, lo mueve al primer elemento enfocable y lo devuelve al disparador. `ArtistCardGrid` pasa el botón que abrió el perfil como `finalFocus`, para que el retorno sea exacto aunque el diálogo se monte ya abierto.
+- **Campos**: `Field` conecta `FieldLabel`, el control (`Input` o `Textarea`) y `FieldError`. El estado `invalid` se enciende con los errores que ya calculaba el formulario, y `Field` escribe `aria-invalid` y `aria-describedby`. Los mensajes y el flujo de envío no cambian.
+- **Scroll**: el diálogo modal bloquea el scroll del documento y lo restaura al cerrar. No hay `overflow: hidden` manual en el componente.
+
+Antes de tocar `ArtistOverlay` o los formularios, lee `node_modules/@ui-sdk/react/docs/llms.txt`. Este repo no tiene linter: se verifica con `npm run build` y `npm test`.
 
 ## Accesibilidad
 
 - `lang="en"` en el documento. El contenido visible está en inglés.
 - Skip link al inicio, foco visible en lima de 1 px.
-- Diálogo con `role="dialog"`, `aria-modal`, título asociado y cierre por Escape.
-- Retratos con alt descriptivo. Etiquetas de formulario asociadas con `htmlFor`.
-- `prefers-reduced-motion` desactiva animaciones, scroll suave y transiciones.
-- Ningún texto pequeño sobre dither. El contraste mínimo usado es 5.13:1.
+- Diálogo construido con `Dialog` de ui-sdk: `role="dialog"`, `aria-modal`, título asociado, cierre con Escape, foco atrapado y retorno al botón que abrió el perfil.
+- Retratos con alt descriptivo. Campos con etiqueta, control y error conectados por `Field` (`aria-describedby`, `aria-invalid`).
+- `prefers-reduced-motion` desactiva animaciones, scroll suave y transiciones. El campo dither del hero pinta un fotograma estático.
+- Ningún texto pequeño sobre dither crudo. El contraste mínimo usado es 5.13:1; en la franja de la cabecera, `ash` se mantiene por encima de 5.6:1.

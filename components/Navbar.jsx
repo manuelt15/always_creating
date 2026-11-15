@@ -11,7 +11,7 @@ export default function Navbar({ home = false }) {
   const href = (id) => (home ? `#${id}` : `/#${id}`)
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-ink">
+    <header className={home ? 'absolute inset-x-0 top-0 z-40' : 'relative z-40'}>
       <div className="shell flex h-16 items-center justify-between gap-4">
         <Link
           href="/"
@@ -52,7 +52,7 @@ export default function Navbar({ home = false }) {
 
       <nav
         aria-label="Sections"
-        className="border-t border-line lg:hidden"
+        className="lg:hidden"
       >
         <div className="shell flex items-center gap-6 overflow-x-auto py-2.5">
           {SECTIONS.map((section) => (

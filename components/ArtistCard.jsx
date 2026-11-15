@@ -46,7 +46,7 @@ export default function ArtistCard({ artist, onSelect, index = 0, variant = 'gri
   const action = onSelect ? (
     <button
       type="button"
-      onClick={() => onSelect(artist)}
+      onClick={(event) => onSelect(artist, event.currentTarget)}
       className="label shrink-0 text-lime transition-colors duration-150 hover:text-paper"
     >
       Open profile

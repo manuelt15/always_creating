@@ -1,3 +1,5 @@
+@layer ui-sdk;
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -95,7 +97,7 @@
   }
 
   .field-label {
-    @apply mb-2 block font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-ash;
+    @apply mb-2 block font-mono text-[10px] font-normal uppercase leading-none tracking-[0.16em] text-ash;
   }
 
   .field {

@@ -50,7 +50,7 @@ export default async function HomePage() {
             <DitherField className="absolute inset-0" />
             <div aria-hidden className="dither-veil pointer-events-none absolute inset-0" />
 
-            <div className="relative pb-14 pt-10 sm:pb-20 sm:pt-16">
+            <div className="relative pb-14 pt-32 sm:pb-20">
               <div className="flex items-start justify-between gap-6">
                 <p className="label">001 / An open room for making</p>
                 <p className="label hidden text-right sm:block">Two artists today, open to more</p>

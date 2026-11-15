@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { Field, FieldError, FieldLabel } from '@ui-sdk/react/field'
+import { Input } from '@ui-sdk/react/input'
 import { validateEmail } from '@/lib/validation'
 
 const EMAIL_ERROR = 'We need an email to send the notes to.'
@@ -56,34 +58,32 @@ export default function NewsletterForm() {
   return (
     <div className="flex w-full max-w-lg flex-col gap-2">
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-2">
-        <label htmlFor="newsletter-email" className="sr-only">
-          Email address
-        </label>
-        <input
-          id="newsletter-email"
-          name="email"
-          type="email"
-          placeholder="Your email address"
-          value={email}
-          onChange={handleChange}
-          aria-invalid={error ? 'true' : undefined}
-          aria-describedby={error ? 'newsletter-email-error' : undefined}
-          autoComplete="email"
-          className="field"
-        />
-        <button
-          type="submit"
-          disabled={status === 'loading'}
-          className="btn-line w-full disabled:pointer-events-none disabled:opacity-40"
-        >
-          {status === 'loading' ? 'Subscribing' : 'Subscribe'}
-        </button>
+        <Field name="email" invalid={error ? true : undefined} className="flex flex-col gap-2">
+          <FieldLabel className="sr-only">Email address</FieldLabel>
+          <Input
+            id="newsletter-email"
+            name="email"
+            type="email"
+            placeholder="Your email address"
+            value={email}
+            onChange={handleChange}
+            autoComplete="email"
+            className="field h-auto"
+          />
+          <button
+            type="submit"
+            disabled={status === 'loading'}
+            className="btn-line w-full disabled:pointer-events-none disabled:opacity-40"
+          >
+            {status === 'loading' ? 'Subscribing' : 'Subscribe'}
+          </button>
+          {error && (
+            <FieldError className="text-[12px] leading-[1.5] text-lime">
+              {error}
+            </FieldError>
+          )}
+        </Field>
       </form>
-      {error && (
-        <p id="newsletter-email-error" className="text-[12px] leading-[1.5] text-lime">
-          {error}
-        </p>
-      )}
       {status === 'error' && (
         <p role="alert" className="text-[12px] leading-[1.5] text-paper">
           Something went wrong. Try again.

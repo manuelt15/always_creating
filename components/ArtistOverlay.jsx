@@ -1,7 +1,13 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+} from '@ui-sdk/react/dialog'
 import Tag from './ui/Tag'
 import DitherImage from './DitherImage'
 
@@ -67,7 +73,7 @@ const SOCIAL_ICONS = {
   },
 }
 
-export default function ArtistOverlay({ artist, onClose }) {
+export default function ArtistOverlay({ artist, onClose, returnTo }) {
   const {
     name,
     slug,
@@ -81,41 +87,21 @@ export default function ArtistOverlay({ artist, onClose }) {
     social = {},
   } = artist
 
-  const closeRef = useRef(null)
-  const titleId = `profile-${slug || name}`.replace(/\s+/g, '-').toLowerCase()
   const socialLinks = Object.entries(social).filter(([, url]) => url)
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    closeRef.current?.focus()
-
-    const handleKey = (event) => {
-      if (event.key === 'Escape') onClose()
-    }
-
-    document.addEventListener('keydown', handleKey)
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-      document.removeEventListener('keydown', handleKey)
-    }
-  }, [onClose])
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
     >
-      <div
-        className="absolute inset-0 bg-ink/90 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden
-      />
+      <DialogBackdrop className="bg-ink/90 backdrop-blur-sm" />
 
-      <div className="relative z-10 max-h-[92dvh] w-full max-w-5xl overflow-y-auto border border-line bg-surface">
+      <DialogContent
+        finalFocus={returnTo || undefined}
+        className="max-h-[92dvh] w-full max-w-5xl gap-0 overflow-y-auto border border-line bg-surface p-0 text-paper shadow-none max-sm:mb-0 max-sm:mt-auto sm:w-[calc(100%-3rem)]"
+      >
         <div className="grid md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           <div className="relative min-h-[300px] overflow-hidden bg-ink md:min-h-[580px]">
             {image ? (
@@ -146,26 +132,21 @@ export default function ArtistOverlay({ artist, onClose }) {
           <div className="flex flex-col p-6 sm:p-9 lg:p-11">
             <div className="flex items-center justify-between gap-4 border-b border-line pb-3">
               <span className="label text-lime">Profile / {slug || 'artist'}</span>
-              <button
-                ref={closeRef}
+              <DialogClose
                 type="button"
-                onClick={onClose}
-                className="label -mr-2 flex items-center gap-2 p-2 transition-colors duration-150 hover:text-paper"
+                className="label -mr-2 flex h-auto items-center gap-2 border-0 bg-transparent p-2 font-normal transition-colors duration-150 hover:text-paper"
                 aria-label="Close profile"
               >
                 Close
-                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden>
+                <svg className="h-3 w-3" width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden>
                   <path d="M4 4L16 16M16 4L4 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
-              </button>
+              </DialogClose>
             </div>
 
-            <h2
-              id={titleId}
-              className="mt-8 font-serif text-[clamp(2.8rem,6vw,4.6rem)] leading-[0.9] tracking-[-0.03em] text-paper"
-            >
+            <DialogTitle className="mt-8 font-serif text-[clamp(2.8rem,6vw,4.6rem)] font-normal leading-[0.9] tracking-[-0.03em] text-paper">
               {name}
-            </h2>
+            </DialogTitle>
 
             <p className="label mt-3 text-lime">{role || discipline[0] || 'Artist'}</p>
 
@@ -236,17 +217,16 @@ export default function ArtistOverlay({ artist, onClose }) {
               >
                 Full index
               </Link>
-              <button
+              <DialogClose
                 type="button"
-                onClick={onClose}
-                className="btn-line px-4 py-2.5"
+                className="btn-line h-auto bg-transparent px-4 py-2.5 font-normal"
               >
                 Back to the room
-              </button>
+              </DialogClose>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
