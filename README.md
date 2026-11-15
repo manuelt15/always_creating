@@ -123,6 +123,14 @@ El campo dither animado del hero no es un PNG: es un canvas en `components/Dithe
 node tools/generate-og.mjs
 ```
 
+## Iconos
+
+`app/favicon.ico` (16 y 32 px), `app/icon.png` (512) y `app/apple-icon.png` (180): el punto de "creating." en dither de un bit sobre el fondo azul. Next los enlaza solos. Se regeneran con:
+
+```bash
+node tools/generate-icons.mjs
+```
+
 ## Deploy
 
 El sitio vive en Vercel. Antes de desplegar, define `MONGODB_URI`, `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`, `FROM_EMAIL` y `NOTIFY_EMAIL` en el panel del proyecto.
