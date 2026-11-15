@@ -53,7 +53,6 @@ export default function Footer() {
 
       <div className="shell flex flex-col justify-between gap-2 border-t border-line py-4 sm:flex-row sm:items-center">
         <p className="label">© {new Date().getFullYear()} always creating</p>
-        <p className="label">Manuel and Moya</p>
       </div>
     </footer>
   )

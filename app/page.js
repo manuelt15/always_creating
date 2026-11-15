@@ -43,12 +43,8 @@ export default async function HomePage() {
         <section className="relative overflow-hidden">
           <div className="shell relative pb-14 pt-10 sm:pb-20 sm:pt-16">
             <div className="flex items-start justify-between gap-6">
-              <p className="label">001 / Two founders, one practice</p>
-              <p className="label hidden text-right sm:block">
-                Manuel and Moya
-                <br />
-                Open to more
-              </p>
+              <p className="label">001 / An open room for making</p>
+              <p className="label hidden text-right sm:block">Two artists today, open to more</p>
             </div>
 
             <h1 className="mt-10 text-display text-paper sm:mt-14">
@@ -59,8 +55,9 @@ export default async function HomePage() {
             <div className="mt-10 grid gap-10 sm:mt-14 lg:grid-cols-12 lg:items-end lg:gap-8">
               <div className="lg:col-span-4">
                 <p className="max-w-[34ch] text-[15px] leading-[1.7] text-paper sm:text-[16px]">
-                  A shared practice by Manuel and Moya. Two people, similar instincts, one
-                  room that stays open.
+                  A collaborative space for artists. Two of us are showing work today, and
+                  the room is built to hold more. Bring what you are making, unfinished is
+                  fine.
                 </p>
 
                 <a
@@ -94,7 +91,7 @@ export default async function HomePage() {
                     <span className="font-serif text-[19px] leading-none text-paper sm:text-[26px]">
                       Manuel
                     </span>
-                    <span className="label">01 / Founder</span>
+                    <span className="label">01 / Artist</span>
                   </figcaption>
                 </figure>
 
@@ -113,7 +110,7 @@ export default async function HomePage() {
                     <span className="font-serif text-[19px] leading-none text-paper sm:text-[26px]">
                       Moya
                     </span>
-                    <span className="label">02 / Founder</span>
+                    <span className="label">02 / Artist</span>
                   </figcaption>
                 </figure>
               </div>
@@ -134,10 +131,10 @@ export default async function HomePage() {
 
               <div className="lg:col-span-5 lg:pt-2">
                 <p className="body-copy">
-                  always creating is the shared practice of Manuel and Moya. They work
-                  together, and they keep arriving at the same ideas from different
-                  directions. The overlap is not a coincidence to smooth out. It is the
-                  material.
+                  always creating is a room for artists, not a studio and not a gallery: a
+                  place to show work while it is still becoming, and to start things with
+                  other people. It runs on collaboration. What one person brings, the next
+                  one bends.
                 </p>
                 <p className="body-copy mt-5">
                   Right now the room holds the two of them. It is not a closed duo. The name
@@ -151,7 +148,7 @@ export default async function HomePage() {
 
                 <dl className="mt-8 border-t border-line">
                   {[
-                    ['Founded by', 'Manuel and Moya'],
+                    ['Open to', 'artists in any medium'],
                     ['Working', 'In collaboration'],
                     ['Room', 'Open to others'],
                   ].map(([term, detail]) => (
@@ -182,12 +179,12 @@ export default async function HomePage() {
         {/* 003 / Roster */}
         <section id="roster" className="border-t border-line">
           <div className="shell py-16 sm:py-24">
-            <SectionMeta index="003" title="In the room" aside="Founding artists, 01 to 02" />
+            <SectionMeta index="003" title="In the room" aside="Artists in the room, 01 to 02" />
 
             <div className="mt-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <p className="body-copy max-w-[52ch]">
-                Manuel and Moya are the two artists here today. Open a profile to read how
-                each one works.
+                Manuel and Moya are showing work here now. Profiles stay short on purpose:
+                the work is the argument. If you make things too, this room has space.
               </p>
               <a
                 href="#collaborate"
