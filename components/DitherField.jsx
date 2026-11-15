@@ -119,7 +119,7 @@ export default function DitherField({ className = '' }) {
             light = falloff * falloff * falloff
           }
 
-          const value = 0.1 + base[index] * 0.32 + waveX[x] * rowWave * 0.1 + light * 1.06
+          const value = 0.17 + base[index] * 0.5 + waveX[x] * rowWave * 0.12 + light * 1.06
           if (value <= BAYER_8[((y & 7) << 3) | (x & 7)]) continue
 
           const alpha = (46 + 209 * clamp01(value)) | 0
@@ -148,6 +148,8 @@ export default function DitherField({ className = '' }) {
     }
 
     const startLoop = () => {
+      // Un fotograma ya pintado: en carga lenta o con reduced motion no se ve negro.
+      paint()
       if (state.frame !== null || !state.inView || document.hidden || reduceMotion.matches) {
         return
       }

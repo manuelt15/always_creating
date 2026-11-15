@@ -42,6 +42,11 @@ export default async function HomePage() {
         {/* 001 / Hero */}
         <section className="relative isolate overflow-hidden">
           <div className="shell relative">
+            {/* Capa estatica: la textura existe aunque el canvas tarde en arrancar. */}
+            <div
+              aria-hidden
+              className="dither-gradient pointer-events-none absolute inset-0 opacity-[0.28]"
+            />
             <DitherField className="absolute inset-0" />
             <div aria-hidden className="dither-veil pointer-events-none absolute inset-0" />
 
