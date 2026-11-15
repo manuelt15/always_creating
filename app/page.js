@@ -4,7 +4,7 @@ import SectionMeta from '@/components/SectionMeta'
 import ArtistCardGrid from '@/components/ArtistCardGrid'
 import ContactForm from '@/components/ContactForm'
 import NewsletterForm from '@/components/NewsletterForm'
-import DitherImage from '@/components/DitherImage'
+import DitherField from '@/components/DitherField'
 import { connectDB } from '@/lib/mongodb'
 import Artist from '@/lib/models/Artist'
 import { buildRoster } from '@/lib/roster'
@@ -40,20 +40,23 @@ export default async function HomePage() {
 
       <main id="main">
         {/* 001 / Hero */}
-        <section className="relative overflow-hidden">
-          <div className="shell relative pb-14 pt-10 sm:pb-20 sm:pt-16">
-            <div className="flex items-start justify-between gap-6">
-              <p className="label">001 / An open room for making</p>
-              <p className="label hidden text-right sm:block">Two artists today, open to more</p>
-            </div>
+        <section className="relative isolate overflow-hidden">
+          <div className="shell relative">
+            <DitherField className="absolute inset-0" />
+            <div aria-hidden className="dither-veil pointer-events-none absolute inset-0" />
 
-            <h1 className="mt-10 text-display text-paper sm:mt-14">
-              <span className="block">always</span>
-              <span className="block pl-[7vw] italic text-lime">creating.</span>
-            </h1>
+            <div className="relative pb-14 pt-10 sm:pb-20 sm:pt-16">
+              <div className="flex items-start justify-between gap-6">
+                <p className="label">001 / An open room for making</p>
+                <p className="label hidden text-right sm:block">Two artists today, open to more</p>
+              </div>
 
-            <div className="mt-10 grid gap-10 sm:mt-14 lg:grid-cols-12 lg:items-end lg:gap-8">
-              <div className="lg:col-span-4">
+              <h1 className="mt-10 text-display text-paper sm:mt-14">
+                <span className="block">always</span>
+                <span className="block pl-[7vw] italic text-lime">creating.</span>
+              </h1>
+
+              <div className="mt-10 max-w-[46ch] sm:mt-14">
                 <p className="max-w-[34ch] text-[15px] leading-[1.7] text-paper sm:text-[16px]">
                   A collaborative space for artists. Two of us are showing work today, and
                   the room is built to hold more. Bring what you are making, unfinished is
@@ -67,52 +70,6 @@ export default async function HomePage() {
                   <span aria-hidden className="block h-8 w-px bg-line" />
                   Read the manifesto
                 </a>
-              </div>
-
-              <div className="relative isolate grid grid-cols-2 gap-3 sm:gap-6 lg:col-span-8">
-                <div
-                  aria-hidden
-                  className="dither-field pointer-events-none absolute -inset-x-3 -top-6 bottom-20 z-0"
-                />
-
-                <figure className="relative z-10 min-w-0">
-                  <div className="relative aspect-[4/5] overflow-hidden border border-line bg-surface">
-                    <DitherImage
-                      large="/dither/manuel-900.png"
-                      small="/dither/manuel-480.png"
-                      alt="Dithered portrait of Manuel"
-                      sizes="(max-width: 640px) 45vw, 34vw"
-                      priority
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="scanlines absolute inset-0" aria-hidden />
-                  </div>
-                  <figcaption className="mt-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-2">
-                    <span className="font-serif text-[19px] leading-none text-paper sm:text-[26px]">
-                      Manuel
-                    </span>
-                    <span className="label">01 / Artist</span>
-                  </figcaption>
-                </figure>
-
-                <figure className="relative z-10 min-w-0 pt-8 sm:pt-14">
-                  <div className="relative aspect-[4/5] overflow-hidden border border-line bg-surface">
-                    <DitherImage
-                      large="/dither/moya-900.png"
-                      small="/dither/moya-480.png"
-                      alt="Dithered portrait of Moya"
-                      sizes="(max-width: 640px) 45vw, 34vw"
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="scanlines absolute inset-0" aria-hidden />
-                  </div>
-                  <figcaption className="mt-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-2">
-                    <span className="font-serif text-[19px] leading-none text-paper sm:text-[26px]">
-                      Moya
-                    </span>
-                    <span className="label">02 / Artist</span>
-                  </figcaption>
-                </figure>
               </div>
             </div>
           </div>
