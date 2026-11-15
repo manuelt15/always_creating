@@ -28,7 +28,9 @@ code se lee sin tubería.**
 ## El autor del commit importa más de lo que parece
 
 `git config user.email` venía vacío en el clon. Un commit de autor desconocido hace que Vercel **bloquee
-el despliegue**. Antes de commitear: `git config user.email` tiene que devolver `manueltorres1512@gmail.com`.
+el despliegue**. Y la identidad depende de la visibilidad: **este repo es público**, así que va
+`manuelt15 <195821676+manuelt15@users.noreply.github.com>`, nunca el Gmail. Si se commitea con el Gmail,
+se reescribe antes de subir y se comprueba con `git log --format='%an <%ae>' origin/main..HEAD`.
 
 ## Resend no lanza cuando rechaza un correo
 
@@ -55,3 +57,18 @@ confirmar.** Hay un test que lo vigila.
 `opengraph-image.alt.txt` no se aplica (la imagen se declara a mano en `app/layout.js`), un `.ico` con
 PNG dentro tiene que ser RGBA o el build falla, y los archivos de convención nuevos no aparecen en
 `next dev` sin reiniciar. **Se verifica en el HTML del build, no en el servidor de desarrollo.**
+
+## Una textura en canvas necesita una capa estática debajo
+
+El `<canvas>` del campo dither arrancaba en el segundo tick del bucle de animación, así que la primera
+carga salía negra. Debajo va una capa CSS con el dither ya generado y el canvas encima. **La textura no
+puede depender del JavaScript.**
+
+## Este repo no tiene linter
+
+`next lint` no existe en Next 16 y el proyecto nunca instaló ESLint: el script sigue en `package.json`
+pero no valida nada. La verificación real es `npm run build` y `npm test`.
+
+## Los assets dither se regeneran
+
+`tools/generate-dither.py` reproduce los PNG. Comprobar con `sha256sum -c` en vez de fiarse del ojo.
