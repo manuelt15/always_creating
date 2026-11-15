@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./app/**/*.{js,jsx}', './components/**/*.{js,jsx}'],
+  content: ['./app/**/*.{js,jsx}', './components/**/*.{js,jsx}', './experiments/**/*.{js,jsx}'],
   darkMode: 'class',
   theme: {
     container: {
@@ -13,7 +13,9 @@ module.exports = {
         // ── always creating palette ──────────────────────────
         ink: 'var(--ink)',
         paper: 'var(--paper)',
-        lime: 'var(--lime)',
+        accent: 'var(--accent)',
+        fill: 'var(--fill)',
+        'on-fill': 'var(--on-fill)',
         ash: 'var(--ash)',
         line: {
           DEFAULT: 'var(--line)',
@@ -43,15 +45,15 @@ module.exports = {
           muted: 'var(--ash)',
         },
         brand: {
-          DEFAULT: 'var(--lime)',
+          DEFAULT: 'var(--fill)',
           dark: 'var(--paper)',
-          light: 'var(--lime)',
+          light: 'var(--fill)',
         },
 
         // ── shadcn semantic tokens ───────────────────────────
         shadcn: {
           primary: {
-            DEFAULT: 'var(--lime)',
+            DEFAULT: 'var(--fill)',
             foreground: 'var(--ink)',
           },
           secondary: {
@@ -81,7 +83,7 @@ module.exports = {
         },
         'shadcn-border': 'var(--line)',
         'shadcn-input': 'var(--surface)',
-        'shadcn-ring': 'var(--lime)',
+        'shadcn-ring': 'var(--fill)',
       },
       borderRadius: {
         DEFAULT: '0px',

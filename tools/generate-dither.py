@@ -9,13 +9,13 @@ Uso, desde la raiz del repo:
 
     python3 tools/generate-dither.py
 
-Requiere Pillow. Lee las fotos originales de public/ y escribe en public/dither/.
+Requiere Pillow. Escribe en public/dither/.
 """
 from pathlib import Path
 import os
 import random
 
-from PIL import Image, ImageEnhance, ImageOps
+from PIL import Image, ImageOps
 
 RAIZ = Path(__file__).resolve().parents[1]
 SALIDA = RAIZ / "public" / "dither"
@@ -60,33 +60,6 @@ def dither(im: Image.Image, tinta=TINTA, fondo=FONDO, sesgo=0.0, invertir=False)
     return salida
 
 
-def recorte_retrato(im: Image.Image, aspecto=4 / 5) -> Image.Image:
-    """Recorta centrado al aspecto pedido, sin deformar."""
-    im = im.convert("RGB")
-    w, h = im.size
-    objetivo = aspecto
-    if w / h > objetivo:
-        nuevo_w = int(h * objetivo)
-        x0 = (w - nuevo_w) // 2
-        im = im.crop((x0, 0, x0 + nuevo_w, h))
-    else:
-        nuevo_h = int(w / objetivo)
-        y0 = max(0, int((h - nuevo_h) * 0.35))  # algo mas de aire arriba
-        im = im.crop((0, y0, w, y0 + nuevo_h))
-    return im
-
-
-def retrato(origen: Path, destino: Path, ancho: int, sesgo=0.06, contraste=1.15):
-    im = Image.open(origen)
-    im = recorte_retrato(im)
-    alto = int(im.height * ancho / im.width)
-    im = im.resize((ancho, alto), Image.LANCZOS)
-    im = ImageEnhance.Contrast(im).enhance(contraste)
-    d = dither(im, sesgo=sesgo)
-    d.save(destino, "PNG", optimize=True)
-    return d.size
-
-
 def degradado(destino: Path, w=1000, h=420, desde=0.0, hasta=1.0):
     """Bloque de degradado dithered, para fondos de seccion."""
     im = Image.new("L", (w, h))
@@ -116,17 +89,6 @@ def grano(destino: Path, lado=256):
 def main():
     os.makedirs(SALIDA, exist_ok=True)
     hechos = []
-
-    # retratos: dos tamanos, uno para escritorio y otro para movil
-    for nombre, origen in (
-        ("manuel", RAIZ / "public" / "artists" / "manuel-torres.jpg"),
-        ("moya", RAIZ / "public" / "moya.jpg"),
-    ):
-        if not origen.exists():
-            print("falta:", origen)
-            continue
-        hechos.append((f"{nombre}-900.png", retrato(origen, SALIDA / f"{nombre}-900.png", 900)))
-        hechos.append((f"{nombre}-480.png", retrato(origen, SALIDA / f"{nombre}-480.png", 480)))
 
     hechos.append(("degradado-lima.png", degradado(SALIDA / "degradado-lima.png")))
     hechos.append(("grano.png", grano(SALIDA / "grano.png")))

@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 
-const LIME = [212, 255, 79]
+// Color del punto: sale de --dither (r, g, b) en app/globals.css, uno por tema.
+const FALLBACK_TINT = [80, 128, 255]
 const MAX_COLS = 220
 const MAX_ROWS = 130
 const FRAME_MS = 1000 / 30
@@ -23,6 +24,12 @@ const BAYER_8 = new Float32Array(
 )
 
 const clamp01 = (value) => (value < 0 ? 0 : value > 1 ? 1 : value)
+
+function readTint() {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--dither')
+  const parts = raw.split(',').map((part) => Number.parseInt(part, 10))
+  return parts.length === 3 && parts.every(Number.isFinite) ? parts : FALLBACK_TINT
+}
 
 export default function DitherField({ className = '' }) {
   const canvasRef = useRef(null)
@@ -47,6 +54,7 @@ export default function DitherField({ className = '' }) {
       last: 0,
       time: 0,
       pointer: { x: 0.68, y: 0.4, tx: 0.68, ty: 0.4, seen: false },
+      tint: readTint(),
     }
 
     const measure = () => {
@@ -89,6 +97,7 @@ export default function DitherField({ className = '' }) {
       if (!base || !image) return
 
       const data = image.data
+      const [tr, tg, tb] = state.tint
       data.fill(0)
 
       const time = state.time
@@ -128,9 +137,9 @@ export default function DitherField({ className = '' }) {
             const rowOffset = offset + dy2 * stride
             for (let dx2 = 0; dx2 < 2; dx2 += 1) {
               const o = rowOffset + dx2 * 4
-              data[o] = LIME[0]
-              data[o + 1] = LIME[1]
-              data[o + 2] = LIME[2]
+              data[o] = tr
+              data[o + 1] = tg
+              data[o + 2] = tb
               data[o + 3] = alpha
             }
           }
@@ -216,6 +225,12 @@ export default function DitherField({ className = '' }) {
       }
     })
 
+    // Cambio de tema: se relee el color y se repinta, también con reduced motion.
+    const themeObserver = new MutationObserver(() => {
+      state.tint = readTint()
+      paint()
+    })
+
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
         state.inView = entry.isIntersecting
@@ -234,6 +249,7 @@ export default function DitherField({ className = '' }) {
 
     resizeObserver.observe(canvas)
     intersectionObserver.observe(canvas)
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
     window.addEventListener('pointermove', onPointer, { passive: true })
     window.addEventListener('pointerdown', onPointer, { passive: true })
     document.addEventListener('visibilitychange', onVisibility)
@@ -243,6 +259,7 @@ export default function DitherField({ className = '' }) {
       stopLoop()
       resizeObserver.disconnect()
       intersectionObserver.disconnect()
+      themeObserver.disconnect()
       window.removeEventListener('pointermove', onPointer)
       window.removeEventListener('pointerdown', onPointer)
       document.removeEventListener('visibilitychange', onVisibility)

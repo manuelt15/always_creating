@@ -29,3 +29,15 @@ code se lee sin tubería.**
 
 `git config user.email` venía vacío en el clon. Un commit de autor desconocido hace que Vercel **bloquee
 el despliegue**. Antes de commitear: `git config user.email` tiene que devolver `manueltorres1512@gmail.com`.
+
+## Resend no lanza cuando rechaza un correo
+
+`resend.emails.send()` devuelve `{ data, error }`: un rechazo (remitente sin verificar, destinatario no
+permitido) no lanza. El `try/catch` que había nunca registraba nada y la respuesta seguía siendo 201.
+**Se comprueba `error` siempre** (`sendEmail` en `lib/resend.js`).
+
+## `onboarding@resend.dev` solo entrega al dueño de la cuenta
+
+Es el remitente de pruebas de Resend. Con él, quien rellena el formulario no recibe el enlace de
+confirmación y su mensaje nunca llega. **`FROM_EMAIL` tiene que ser del dominio verificado**
+(`alwayscreating.es`).

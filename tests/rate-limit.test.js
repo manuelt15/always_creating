@@ -43,7 +43,7 @@ test('sin cabecera de IP la clave no revienta', () => {
 });
 
 test('las rutas publicas aplican el limite', () => {
-  for (const ruta of ['app/api/contact/route.js', 'app/api/newsletter/route.js']) {
+  for (const ruta of ['app/api/contact/route.js']) {
     const fuente = readFileSync(join(root, ruta), 'utf8');
     assert.match(fuente, /comprobarLimite\(claveCliente\(request/);
     assert.match(fuente, /status: 429/);

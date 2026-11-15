@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server'
 import { randomUUID } from 'node:crypto'
 import { connectDB } from '@/lib/mongodb'
 import ContactMessage from '@/lib/models/ContactMessage'
-import { resend, FROM_EMAIL } from '@/lib/resend'
+import { sendEmail } from '@/lib/resend'
 import { contactVerifyEmail } from '@/lib/emails'
 import { validateContact } from '@/lib/validation'
+import { EXPERIMENT_SLUGS, getExperiment } from '@/lib/experiments'
 import { claveCliente, comprobarLimite } from '@/lib/rate-limit'
 
 const LIMITE_BYTES = 10_000
@@ -31,9 +32,10 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
     }
 
-    const { name, email, message } = body || {}
+    const { name, email, message, kind = 'idea' } = body || {}
+    const about = body?.about || null
 
-    const validation = validateContact(body)
+    const validation = validateContact(body, EXPERIMENT_SLUGS)
     if (!validation.ok) {
       return NextResponse.json({ error: validation.error }, { status: 400 })
     }
@@ -41,19 +43,21 @@ export async function POST(request) {
     const token = randomUUID()
 
     await connectDB()
-    await ContactMessage.create({ name, email, message, token })
+    await ContactMessage.create({ name, email, message, kind, about, token })
 
-    try {
-      const url = `${new URL(request.url).origin}/api/contact/confirm?token=${token}`
-      await resend.emails.send({
-        from: FROM_EMAIL,
-        to:   email,
-        subject: 'Confirm your message — alwayscreating',
-        html: contactVerifyEmail({ name, url }),
-      })
-    } catch (emailErr) {
-      console.error('Email error:', emailErr.message)
-    }
+    const siteUrl = new URL(request.url).origin
+    await sendEmail({
+      to: email,
+      subject: 'Confirma tu mensaje, always creating',
+      html: contactVerifyEmail({
+        name,
+        url: `${siteUrl}/api/contact/confirm?token=${token}`,
+        kind,
+        about: getExperiment(about)?.title || null,
+        message,
+        siteUrl,
+      }),
+    })
 
     // Nada se entrega hasta que el remitente confirme desde su propio correo.
     return NextResponse.json({ success: true, pending: true }, { status: 201 })

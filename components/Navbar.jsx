@@ -1,12 +1,5 @@
 import Link from 'next/link'
 
-const SECTIONS = [
-  { id: 'manifesto', label: 'Manifesto' },
-  { id: 'roster', label: 'Roster' },
-  { id: 'collaborate', label: 'Collaborate' },
-  { id: 'contact', label: 'Contact' },
-]
-
 export default function Navbar({ home = false }) {
   const href = (id) => (home ? `#${id}` : `/#${id}`)
 
@@ -16,54 +9,38 @@ export default function Navbar({ home = false }) {
         <Link
           href="/"
           className="shrink-0 font-serif text-[22px] leading-none tracking-[-0.02em] text-paper sm:text-[24px]"
-          aria-label="always creating, home"
+          aria-label="always creating, inicio"
         >
-          always creating<span className="text-lime">.</span>
+          always creating<span className="text-accent">.</span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
-          {SECTIONS.map((section) => (
+        <div className="flex items-center gap-7">
+          <nav aria-label="Principal" className="hidden sm:block">
             <a
-              key={section.id}
-              href={href(section.id)}
+              href={href('experimentos')}
               className="label transition-colors duration-150 hover:text-paper"
             >
-              {section.label}
+              Experimentos
             </a>
-          ))}
-          <Link
-            href="/artists"
-            className="label border-l border-line pl-7 transition-colors duration-150 hover:text-paper"
-          >
-            Index
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-4">
+          </nav>
           <span className="label hidden items-center gap-2 lg:flex">
             <span className="status-dot" aria-hidden />
-            Open call
+            Laboratorio
           </span>
-          <a href={href('contact')} className="btn-lime px-4 py-2.5">
-            Say hello
+          <a href={href('puerta')} className="btn-primary px-4 py-2.5">
+            Dejar una idea
           </a>
         </div>
       </div>
 
-      <nav
-        aria-label="Sections"
-        className="lg:hidden"
-      >
-        <div className="shell flex items-center gap-6 overflow-x-auto py-2.5">
-          {SECTIONS.map((section) => (
-            <a
-              key={section.id}
-              href={href(section.id)}
-              className="label shrink-0 whitespace-nowrap transition-colors duration-150 hover:text-paper"
-            >
-              {section.label}
-            </a>
-          ))}
+      <nav aria-label="Secciones" className="sm:hidden">
+        <div className="shell py-2.5">
+          <a
+            href={href('experimentos')}
+            className="label transition-colors duration-150 hover:text-paper"
+          >
+            Experimentos
+          </a>
         </div>
       </nav>
     </header>

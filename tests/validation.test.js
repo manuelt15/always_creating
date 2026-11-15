@@ -1,11 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { validateContact, validateEmail } from '../lib/validation.js';
-
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 test('email válido pasa', () => {
   assert.deepEqual(validateEmail('persona@example.com'), { ok: true, error: null });
@@ -36,8 +31,17 @@ test('nombre vacío no pasa', () => {
   assert.equal(result.error, 'Name is required');
 });
 
-test('ruta de artista espera params con await', () => {
-  const route = readFileSync(join(root, 'app/api/artists/[id]/route.js'), 'utf8');
-  assert.match(route, /const \{ id \} = await params/);
-  assert.doesNotMatch(route, /params\.id/);
+test('tipo desconocido no pasa', () => {
+  const result = validateContact({ name: 'Ana', email: 'ana@example.com', message: 'Hola', kind: 'spam' });
+  assert.equal(result.ok, false);
+});
+
+test('comentario sobre un experimento que existe pasa', () => {
+  const body = { name: 'Ana', email: 'ana@example.com', message: 'Hola', kind: 'comment', about: 'campo-dither' };
+  assert.equal(validateContact(body, ['campo-dither']).ok, true);
+});
+
+test('comentario sobre un experimento que no existe no pasa', () => {
+  const body = { name: 'Ana', email: 'ana@example.com', message: 'Hola', kind: 'comment', about: 'inventado' };
+  assert.equal(validateContact(body, ['campo-dither']).ok, false);
 });

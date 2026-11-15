@@ -6,18 +6,47 @@
 
 /* ─── Tokens ───────────────────────────────────────────────── */
 :root {
-  --ink: #0B0B0C;
-  --paper: #ECE8E1;
-  --lime: #D4FF4F;
-  --ash: #8C8A84;
-  --line: #262628;
-  --line-strong: #3A3A3D;
-  --surface: #121214;
-  --surface-raised: #18181B;
+  --ink: #040A1E;
+  --paper: #E6EEFF;
+  --accent: #A8C4FF;
+  --fill: #1F4FEF;
+  --on-fill: #E6EEFF;
+  --ash: #8A9DC8;
+  --line: #172458;
+  --line-strong: #263A86;
+  --surface: #081030;
+  --surface-raised: #0D1840;
+  /* Punto del campo dither, en r, g, b: lo lee components/DitherField.jsx */
+  --dither: 80, 128, 255;
+}
 
-  --duration-exit: 150ms;
-  --duration-enter: 250ms;
-  --duration-move: 380ms;
+/* Temas: el azul es el de :root. Lo aplica el script de app/layout.js antes de pintar. */
+:root[data-theme='naranja'] {
+  --ink: #120A06;
+  --paper: #FFF1E8;
+  --accent: #FFA673;
+  --fill: #FF5C1F;
+  --on-fill: #120A06;
+  --ash: #C29A84;
+  --line: #3A2416;
+  --line-strong: #5C3920;
+  --surface: #1C110B;
+  --surface-raised: #26170E;
+  --dither: 255, 104, 40;
+}
+
+:root[data-theme='mono'] {
+  --ink: #0A0A0A;
+  --paper: #EDEDED;
+  --accent: #FFFFFF;
+  --fill: #EDEDED;
+  --on-fill: #0A0A0A;
+  --ash: #9B9B9B;
+  --line: #262626;
+  --line-strong: #3D3D3D;
+  --surface: #121212;
+  --surface-raised: #1A1A1A;
+  --dither: 225, 225, 225;
 }
 
 @layer base {
@@ -29,15 +58,29 @@
     background: var(--ink);
     color-scheme: dark;
     scroll-behavior: smooth;
-    overflow-x: hidden;
+    /* clip y no hidden: hidden crea un contenedor de scroll y en Safari móvil rompe el
+       desplazamiento y los elementos fijos. */
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
+  /* El pie siempre al final: el contenido crece y empuja el footer, aunque la página sea corta.
+     100dvh sigue a las barras del navegador móvil; 100vh queda de respaldo. */
   body {
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
     background: var(--ink);
     color: var(--paper);
-    overflow-x: hidden;
+    overflow-x: clip;
     text-rendering: optimizeLegibility;
+  }
+
+  body > main {
+    flex: 1 0 auto;
   }
 
   h1,
@@ -51,12 +94,12 @@
   }
 
   ::selection {
-    background: var(--lime);
-    color: var(--ink);
+    background: var(--fill);
+    color: var(--on-fill);
   }
 
   :focus-visible {
-    outline: 1px solid var(--lime);
+    outline: 1px solid var(--accent);
     outline-offset: 3px;
   }
 
@@ -88,12 +131,12 @@
     @apply font-sans text-[15px] leading-[1.7] text-paper sm:text-[16px];
   }
 
-  .btn-lime {
-    @apply inline-flex items-center justify-center gap-3 whitespace-nowrap bg-lime px-5 py-3 font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-ink transition-colors duration-150 hover:bg-paper sm:text-[11px];
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-3 whitespace-nowrap bg-fill px-5 py-3 font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-on-fill transition-colors duration-150 hover:bg-paper hover:text-ink sm:text-[11px];
   }
 
   .btn-line {
-    @apply inline-flex items-center justify-center gap-3 whitespace-nowrap border border-line px-5 py-3 font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-paper transition-colors duration-150 hover:border-lime hover:text-lime sm:text-[11px];
+    @apply inline-flex items-center justify-center gap-3 whitespace-nowrap border border-line px-5 py-3 font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-paper transition-colors duration-150 hover:border-accent hover:text-accent sm:text-[11px];
   }
 
   .field-label {
@@ -101,7 +144,7 @@
   }
 
   .field {
-    @apply w-full border border-line bg-ink px-3.5 py-3 font-sans text-[16px] leading-[1.4] text-paper transition-colors duration-150 placeholder:text-ash focus:border-lime focus:outline-none;
+    @apply w-full border border-line bg-ink px-3.5 py-3 font-sans text-[16px] leading-[1.4] text-paper transition-colors duration-150 placeholder:text-ash focus:border-accent focus:outline-none;
   }
 
   .frame {
@@ -109,7 +152,7 @@
   }
 
   .skip-link {
-    @apply fixed left-4 top-4 z-[100] -translate-y-24 bg-lime px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-transform duration-150 focus:translate-y-0;
+    @apply fixed left-4 top-4 z-[100] -translate-y-24 bg-fill px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-on-fill transition-transform duration-150 focus:translate-y-0;
   }
 
   /* Dither as a UI detail: dot rules and edges, never inside type */
@@ -135,37 +178,63 @@
     background-image:
       linear-gradient(
         to bottom,
-        rgba(11, 11, 12, 0.94) 0,
-        rgba(11, 11, 12, 0.82) 96px,
-        rgba(11, 11, 12, 0) 260px
+        color-mix(in srgb, var(--ink) 94%, transparent) 0,
+        color-mix(in srgb, var(--ink) 82%, transparent) 96px,
+        color-mix(in srgb, var(--ink) 0%, transparent) 260px
       ),
       linear-gradient(
         to right,
-        rgba(11, 11, 12, 0.92) 0%,
-        rgba(11, 11, 12, 0.8) 30%,
-        rgba(11, 11, 12, 0.22) 58%,
-        rgba(11, 11, 12, 0.1) 100%
+        color-mix(in srgb, var(--ink) 92%, transparent) 0%,
+        color-mix(in srgb, var(--ink) 80%, transparent) 30%,
+        color-mix(in srgb, var(--ink) 22%, transparent) 58%,
+        color-mix(in srgb, var(--ink) 10%, transparent) 100%
       ),
       linear-gradient(
         to top,
-        rgba(11, 11, 12, 0.74) 0%,
-        rgba(11, 11, 12, 0.34) 26%,
-        rgba(11, 11, 12, 0) 52%
+        color-mix(in srgb, var(--ink) 74%, transparent) 0%,
+        color-mix(in srgb, var(--ink) 34%, transparent) 26%,
+        color-mix(in srgb, var(--ink) 0%, transparent) 52%
       );
   }
 
-  /* The generated 1-bit gradient, tinted to lime with multiply */
+  /* The generated 1-bit gradient, tinted to the theme fill with multiply */
   .dither-gradient {
-    background-color: var(--lime);
+    background-color: var(--fill);
     background-image: url('/dither/degradado-lima.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-blend-mode: multiply;
   }
 
-  .dither-fade {
-    -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+  /* Campo del hero: se desvanece por abajo en vez de cortar con una línea */
+  .hero-field {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 240px), transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 240px), transparent 100%);
+  }
+
+  /* Texto del hero por debajo de 1024 px: cae sobre la trama, así que lleva detrás un velo
+     difuminado (sin bordes) del color de fondo. En escritorio ya lo protege .dither-veil. */
+  @media (max-width: 1023px) {
+    .hero-copy {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero-copy::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: color-mix(in srgb, var(--ink) 90%, transparent);
+      box-shadow: 0 0 40px 32px color-mix(in srgb, var(--ink) 90%, transparent);
+      pointer-events: none;
+    }
+  }
+
+  /* Franja dither entre Experimentos e Ideas: sin bordes, se funde con lo de arriba y abajo */
+  .band-field {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 38%, #000 50%, rgba(0, 0, 0, 0.35) 78%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 38%, #000 50%, rgba(0, 0, 0, 0.35) 78%, transparent 100%);
   }
 
   /* Grain sits on surfaces, behind content, never on small copy */
@@ -213,9 +282,192 @@
     width: 6px;
     height: 6px;
     border-radius: 999px;
-    background: var(--lime);
-    box-shadow: 0 0 0 3px rgba(212, 255, 79, 0.12);
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
     animation: pulse-dot 3.2s ease-in-out infinite;
+  }
+
+  /* Campos: estado de error y selector propio (sin desplegables nativos) */
+  .field[data-invalid],
+  .field[aria-invalid='true'] {
+    @apply border-accent;
+  }
+
+  .field-error {
+    @apply mt-2 block text-[12px] leading-[1.4] text-accent;
+  }
+
+  .select-trigger {
+    @apply flex h-[50px] w-full items-center justify-between gap-3 border border-line bg-ink px-3.5 text-left font-sans text-[16px] leading-none text-paper transition-colors duration-150 hover:border-line-strong focus-visible:border-accent focus-visible:outline-none data-[open]:border-accent;
+  }
+
+  .select-chevron {
+    @apply shrink-0 text-ash transition-transform duration-150;
+  }
+
+  .select-trigger[data-open] .select-chevron {
+    transform: rotate(180deg);
+  }
+
+  .select-content {
+    width: var(--anchor-width);
+    max-height: min(320px, var(--available-height));
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px;
+    border: 1px solid var(--line-strong);
+    background: var(--surface-raised);
+    color: var(--paper);
+    transform-origin: var(--transform-origin);
+    transition:
+      opacity 140ms ease-out,
+      translate 140ms ease-out;
+  }
+
+  .select-content:is([data-starting-style], [data-ending-style]) {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+
+  .select-item {
+    @apply flex min-h-[42px] cursor-default select-none items-center gap-3 px-3 py-2 text-[15px] leading-[1.3] text-paper outline-none;
+  }
+
+  .select-item[data-highlighted] {
+    @apply bg-ink;
+  }
+
+  .select-item[data-selected] {
+    @apply text-accent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .select-content,
+    .select-chevron {
+      transition: none;
+    }
+  }
+
+  /* Selector de tema del hero */
+  .theme-switch {
+    @apply relative isolate inline-grid grid-cols-3 border border-line bg-ink;
+  }
+
+  .theme-switch-indicator {
+    position: absolute;
+    z-index: -1;
+    top: var(--segmented-control-indicator-top);
+    left: var(--segmented-control-indicator-left);
+    width: var(--segmented-control-indicator-width);
+    height: var(--segmented-control-indicator-height);
+    background: var(--surface-raised);
+    box-shadow: inset 0 -1px 0 var(--accent);
+    transition-property: left, width;
+    transition-duration: 180ms;
+    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .theme-switch-item {
+    @apply flex h-10 items-center gap-2 px-3.5 font-mono text-[10px] uppercase tracking-[0.14em] text-ash transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-accent sm:text-[11px];
+  }
+
+  .theme-switch-item[data-checked] {
+    @apply text-paper;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-switch-indicator {
+      transition-duration: 0s;
+    }
+  }
+
+  /* Ficha de experimento */
+  .chip {
+    @apply inline-flex items-center gap-2 border border-line bg-ink px-3 py-2 font-mono text-[10px] uppercase leading-none tracking-[0.14em] text-paper sm:text-[11px];
+  }
+
+  /* Overlay de comentario */
+  .comment-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: color-mix(in srgb, var(--ink) 82%, transparent);
+    transition: opacity 200ms ease-out;
+  }
+
+  .comment-backdrop:is([data-starting-style], [data-ending-style]) {
+    opacity: 0;
+  }
+
+  .comment-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 61;
+    margin: auto;
+    width: min(600px, calc(100vw - 32px));
+    height: fit-content;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--paper);
+    padding: 0;
+    transition:
+      opacity 200ms ease-out,
+      translate 260ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .comment-dialog:is([data-starting-style], [data-ending-style]) {
+    opacity: 0;
+    translate: 0 12px;
+  }
+
+  .comment-dialog[data-ending-style] {
+    transition-duration: 150ms;
+  }
+
+  .comment-dialog::backdrop {
+    background: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .comment-backdrop,
+    .comment-dialog {
+      transition: none;
+    }
+  }
+
+  /* La puerta: idea o comentario */
+  .door-kind {
+    @apply relative isolate grid h-[50px] w-full grid-cols-2 border border-line bg-ink;
+  }
+
+  .door-kind-indicator {
+    position: absolute;
+    z-index: -1;
+    top: var(--segmented-control-indicator-top);
+    left: var(--segmented-control-indicator-left);
+    width: var(--segmented-control-indicator-width);
+    height: var(--segmented-control-indicator-height);
+    background: var(--fill);
+    transition-property: left, width;
+    transition-duration: 180ms;
+    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .door-kind-item {
+    @apply font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-accent;
+  }
+
+  .door-kind-item[data-checked] {
+    @apply text-on-fill focus-visible:outline-on-fill;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .door-kind-indicator {
+      transition-duration: 0s;
+    }
   }
 }
 
@@ -226,85 +478,5 @@
   }
   50% {
     opacity: 0.35;
-  }
-}
-
-/* ─── View Transitions (roster overlay) ────────────────────── */
-@keyframes fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slide {
-  from {
-    translate: var(--slide-offset);
-  }
-  to {
-    translate: 0;
-  }
-}
-
-::view-transition-new(.slide-from-right) {
-  --slide-offset: 80px;
-  animation:
-    var(--duration-enter) ease-out var(--duration-exit) both fade,
-    var(--duration-move) ease-in-out both slide;
-}
-
-::view-transition-old(.slide-to-right) {
-  --slide-offset: 80px;
-  animation:
-    var(--duration-exit) ease-in both fade reverse,
-    var(--duration-move) ease-in-out both slide reverse;
-}
-
-::view-transition-new(.fade-in) {
-  animation: var(--duration-enter) ease-out both fade;
-}
-
-::view-transition-old(.fade-out) {
-  animation: var(--duration-exit) ease-in both fade reverse;
-}
-
-@keyframes scale-up {
-  from {
-    transform: scale(0.96);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes scale-down {
-  from {
-    transform: scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: scale(0.96);
-    opacity: 0;
-  }
-}
-
-::view-transition-new(.scale-in) {
-  animation: var(--duration-enter) cubic-bezier(0.34, 1.4, 0.64, 1) both scale-up;
-}
-
-::view-transition-old(.scale-out) {
-  animation: var(--duration-exit) ease-in both scale-down;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*),
-  ::view-transition-new(*),
-  ::view-transition-group(*) {
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
   }
 }
