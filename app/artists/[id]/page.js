@@ -1,19 +1,24 @@
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import ArtistProfile from '@/components/ArtistProfile'
 import ContactForm from '@/components/ContactForm'
 import { notFound } from 'next/navigation'
 import { connectDB } from '@/lib/mongodb'
 import Artist from '@/lib/models/Artist'
+import { FOUNDERS } from '@/lib/roster'
 
 async function getArtist(slug) {
   try {
     await connectDB()
     const artist = await Artist.findOne({ slug }).lean()
-    if (!artist) return null
-    return { ...artist, _id: artist._id?.toString?.() || artist._id }
+    if (artist) {
+      return { ...artist, _id: artist._id?.toString?.() || artist._id }
+    }
   } catch {
-    return null
+    // Sin base de datos, el perfil sigue respondiendo con el roster fundador.
   }
+
+  return FOUNDERS.find((artist) => artist.slug === slug) || null
 }
 
 export async function generateMetadata({ params }) {
@@ -21,8 +26,8 @@ export async function generateMetadata({ params }) {
   const artist = await getArtist(id)
   if (!artist) return { title: 'Artist not found' }
   return {
-    title: `${artist.name} — alwayscreating`,
-    description: artist.bio || `${artist.name} on alwayscreating`,
+    title: artist.name,
+    description: artist.bio || `${artist.name} on always creating`,
   }
 }
 
@@ -34,14 +39,29 @@ export default async function ArtistProfilePage({ params }) {
   return (
     <>
       <Navbar />
-      <ArtistProfile artist={artist} />
-      <ContactForm />
-      <footer className="bg-footer border-t border-default">
-        <div className="max-w-content mx-auto px-4 lg:px-page py-10">
-          <div className="font-display font-bold text-hsm text-text-primary mb-1">alwayscreating</div>
-          <p className="font-body text-[12px] text-text-muted">Dedicated to the ones who never stop creating.</p>
-        </div>
-      </footer>
+
+      <main id="main">
+        <ArtistProfile artist={artist} />
+
+        <section id="contact" className="border-t border-line">
+          <div className="shell grid gap-8 py-16 sm:py-20 lg:grid-cols-12">
+            <div className="lg:col-span-4">
+              <p className="label text-lime">Contact</p>
+              <h2 className="mt-4 font-serif text-[clamp(2.2rem,4vw,3.4rem)] leading-[0.98] tracking-[-0.02em] text-paper">
+                Reach the room.
+              </h2>
+              <p className="mt-4 max-w-[34ch] text-[14px] leading-[1.65] text-ash">
+                One message reaches Manuel and Moya.
+              </p>
+            </div>
+            <div className="lg:col-span-7 lg:col-start-6">
+              <ContactForm />
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </>
   )
 }

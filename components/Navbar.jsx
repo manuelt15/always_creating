@@ -1,47 +1,71 @@
-'use client'
-
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Moon, Sun } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
-export default function Navbar() {
-  const [dark, setDark] = useState(false)
+const SECTIONS = [
+  { id: 'manifesto', label: 'Manifesto' },
+  { id: 'roster', label: 'Roster' },
+  { id: 'collaborate', label: 'Collaborate' },
+  { id: 'contact', label: 'Contact' },
+]
 
-  useEffect(() => {
-    const stored = localStorage.getItem('theme')
-    const isDark = stored === 'dark'
-    setDark(isDark)
-    document.documentElement.classList.toggle('dark', isDark)
-  }, [])
-
-  const toggleTheme = () => {
-    const next = !dark
-    setDark(next)
-    document.documentElement.classList.toggle('dark', next)
-    localStorage.setItem('theme', next ? 'dark' : 'light')
-  }
+export default function Navbar({ home = false }) {
+  const href = (id) => (home ? `#${id}` : `/#${id}`)
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/90 backdrop-blur-sm">
-      <div className="mx-auto flex items-center justify-center gap-3 px-4 py-4">
+    <header className="sticky top-0 z-40 border-b border-line bg-ink">
+      <div className="shell flex h-16 items-center justify-between gap-4">
         <Link
           href="/"
-          className="font-heading text-[18px] text-foreground uppercase tracking-tight"
+          className="shrink-0 font-serif text-[22px] leading-none tracking-[-0.02em] text-paper sm:text-[24px]"
+          aria-label="always creating, home"
         >
-          alwayscreating
+          always creating<span className="text-lime">.</span>
         </Link>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleTheme}
-          aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-          className="h-8 w-8 rounded-full"
-        >
-          {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </Button>
+        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
+          {SECTIONS.map((section) => (
+            <a
+              key={section.id}
+              href={href(section.id)}
+              className="label transition-colors duration-150 hover:text-paper"
+            >
+              {section.label}
+            </a>
+          ))}
+          <Link
+            href="/artists"
+            className="label border-l border-line pl-7 transition-colors duration-150 hover:text-paper"
+          >
+            Index
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-4">
+          <span className="label hidden items-center gap-2 lg:flex">
+            <span className="status-dot" aria-hidden />
+            Open call
+          </span>
+          <a href={href('contact')} className="btn-lime px-4 py-2.5">
+            Say hello
+          </a>
+        </div>
       </div>
-    </nav>
+
+      <nav
+        aria-label="Sections"
+        className="border-t border-line lg:hidden"
+      >
+        <div className="shell flex items-center gap-6 overflow-x-auto py-2.5">
+          {SECTIONS.map((section) => (
+            <a
+              key={section.id}
+              href={href(section.id)}
+              className="label shrink-0 whitespace-nowrap transition-colors duration-150 hover:text-paper"
+            >
+              {section.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+    </header>
   )
 }

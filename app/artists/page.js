@@ -1,10 +1,10 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import LadderLine from '@/components/LadderLine'
 import ArtistCardGrid from '@/components/ArtistCardGrid'
 import NewsletterForm from '@/components/NewsletterForm'
 import { connectDB } from '@/lib/mongodb'
 import Artist from '@/lib/models/Artist'
+import { buildRoster } from '@/lib/roster'
 
 async function getArtists() {
   try {
@@ -16,46 +16,55 @@ async function getArtists() {
 }
 
 export default async function ArtistsPage() {
-  const list = (await getArtists()).map((a) => ({
-    ...a,
-    _id: a._id?.toString?.() || a._id,
+  const list = (await getArtists()).map((artist) => ({
+    ...artist,
+    _id: artist._id?.toString?.() || artist._id,
   }))
+  const artists = buildRoster(list)
 
   return (
     <>
       <Navbar />
 
-      {/* ── Chip + Grid ─────────────────────────────────────── */}
-      <section className="bg-background">
-        <div className="max-w-content mx-auto px-4 lg:px-page pt-16 pb-20">
-          <div className="flex justify-center mb-10">
-            <div className="inline-flex items-center gap-2 border border-text-primary/20 rounded-full px-4 py-1.5">
-              <span className="text-brand text-[10px]">✦</span>
-              <span className="font-body text-[10px] tracking-[1px] uppercase text-text-primary">
-                All Artists
-              </span>
+      <main id="main">
+        <section className="shell pb-16 pt-12 sm:pb-24 sm:pt-20">
+          <div className="flex items-baseline justify-between gap-6 border-b border-line pb-3">
+            <p className="label">Index / Artists</p>
+            <p className="label text-right">{String(artists.length).padStart(2, '0')} in the room</p>
+          </div>
+
+          <h1 className="mt-10 max-w-[14ch] font-serif text-[clamp(3.2rem,8vw,7rem)] leading-[0.88] tracking-[-0.035em] text-paper">
+            Everyone in <span className="italic text-lime">the room.</span>
+          </h1>
+
+          <p className="body-copy mt-6 max-w-[46ch]">
+            The full index of artists in always creating. Two founders today, and whoever
+            joins next.
+          </p>
+
+          <div className="mt-14">
+            <ArtistCardGrid artists={artists} />
+          </div>
+        </section>
+
+        <section className="border-t border-line">
+          <div className="shell grid gap-10 py-16 sm:py-20 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <p className="label text-lime">Stay close</p>
+              <h2 className="mt-4 font-serif text-[clamp(2rem,4vw,3.2rem)] leading-[0.98] tracking-[-0.02em] text-paper">
+                Occasional notes from the room.
+              </h2>
+            </div>
+            <div className="lg:col-span-6 lg:col-start-7">
+              <p className="body-copy mb-6 max-w-[42ch]">
+                What we are making, who is joining, what is still unfinished. No schedule,
+                no noise.
+              </p>
+              <NewsletterForm />
             </div>
           </div>
-
-          <ArtistCardGrid artists={list} />
-        </div>
-      </section>
-
-      {/* ── Stay in the loop (popover, same pattern as home) ── */}
-      <section className="bg-background flex flex-col items-center justify-center gap-4 pb-20">
-        <p className="font-body text-[10px] tracking-[2px] uppercase text-shadcn-muted-foreground">
-          ✦ check more ✦
-        </p>
-        <LadderLine side="right" label="Stay in the loop" contentClassName="w-[min(92vw,460px)] p-4">
-          <div className="mb-3">
-            <h3 className="font-heading text-[18px] text-foreground">Stay in the loop.</h3>
-            <p className="font-body text-[11px] text-foreground/60 mt-1">
-              New artists, curated drops, and creative updates — straight to your inbox.
-            </p>
-          </div>
-          <NewsletterForm />
-        </LadderLine>
-      </section>
+        </section>
+      </main>
 
       <Footer />
     </>

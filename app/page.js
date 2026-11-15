@@ -1,152 +1,313 @@
-import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import LadderLine from '@/components/LadderLine'
+import SectionMeta from '@/components/SectionMeta'
+import ArtistCardGrid from '@/components/ArtistCardGrid'
 import ContactForm from '@/components/ContactForm'
+import NewsletterForm from '@/components/NewsletterForm'
+import DitherImage from '@/components/DitherImage'
 import { connectDB } from '@/lib/mongodb'
 import Artist from '@/lib/models/Artist'
+import { buildRoster } from '@/lib/roster'
 
-async function getFeaturedArtists() {
+export const dynamic = 'force-dynamic'
+
+async function getApiArtists() {
   try {
     await connectDB()
-    return await Artist.find({ featured: true }).sort({ order: 1, createdAt: 1 }).lean()
+    const list = await Artist.find({}).sort({ order: 1, createdAt: 1 }).limit(6).lean()
+    return list.map((artist) => ({
+      ...artist,
+      _id: artist._id?.toString?.() || artist._id,
+    }))
   } catch {
     return []
   }
 }
 
+const OPEN_TO = [
+  'Artists working in any discipline, finished or not.',
+  'Work that is still moving and does not need to look resolved.',
+  'People who want to build something with someone else in the room.',
+]
+
 export default async function HomePage() {
-  const list = (await getFeaturedArtists())
-    .slice(0, 3)
-    .map((a) => ({ ...a, _id: a._id?.toString?.() || a._id }))
+  const apiArtists = await getApiArtists()
+  const roster = buildRoster(apiArtists)
 
   return (
     <>
-      <Navbar />
+      <Navbar home />
 
-      {/* ── Ladder ────────────────────────────────────────── */}
-      <section className="bg-background min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center gap-10 sm:gap-14 py-20">
-        <p className="font-body text-[10px] tracking-[2px] uppercase text-shadcn-muted-foreground">
-          ✦ explore each line ✦
-        </p>
-
-        {/* Line 1 — Presentation */}
-        <LadderLine side="right" label="About alwayscreating">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-shadcn-primary text-[10px]">✦</span>
-              <span className="font-body text-[10px] tracking-[1px] uppercase text-foreground/70">
-                alwayscreating
-              </span>
-            </div>
-            <h2 className="font-heading text-[22px] sm:text-[26px] leading-[1.1] text-foreground">
-              You are not your work. You are how you create.
-            </h2>
-            <p className="font-body text-[12px] leading-[20px] text-foreground/70">
-              A curated space for discovering creatives. Build a living identity across
-              music, visual art, and beyond.
-            </p>
-            <div className="h-px w-full bg-shadcn-border" />
-            <p className="font-body text-[12px] leading-[20px] text-foreground/70">
-              Begins as a response to static creation. A space where artists were
-              forced to present finished work, instead of showing how they think,
-              evolve, and exist. It was never about building another platform. It was
-              about creating a bridge between the artist and their world.
-            </p>
-          </div>
-        </LadderLine>
-
-        {/* Line 2 — Featured Artists */}
-        <LadderLine side="left" label="Featured artists">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2 className="font-heading text-[20px] text-foreground">Featured Artists</h2>
-              <p className="font-body text-[12px] text-foreground/70 mt-1">
-                Every creator. Every discipline. One space.
+      <main id="main">
+        {/* 001 / Hero */}
+        <section className="relative overflow-hidden">
+          <div className="shell relative pb-14 pt-10 sm:pb-20 sm:pt-16">
+            <div className="flex items-start justify-between gap-6">
+              <p className="label">001 / Two founders, one practice</p>
+              <p className="label hidden text-right sm:block">
+                Manuel and Moya
+                <br />
+                Open to more
               </p>
             </div>
 
-            {list.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                {list.map((a) => (
-                  <Link
-                    key={a._id || a.slug}
-                    href="/artists"
-                    className="group flex gap-3 items-start rounded-md p-2 -mx-2 hover:bg-shadcn-accent transition-colors"
-                  >
-                    <div className="h-16 w-14 shrink-0 rounded-md overflow-hidden bg-shadcn-muted">
-                      {a.profileImage ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={a.profileImage} alt={a.name} className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="h-full w-full" />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex flex-col gap-0.5">
-                      <span className="font-heading text-[14px] text-foreground leading-tight">
-                        {a.name}
-                      </span>
-                      {a.discipline?.[0] && (
-                        <span className="font-body text-[10px] uppercase tracking-wider text-shadcn-muted-foreground">
-                          {a.discipline[0]}
-                        </span>
-                      )}
-                      {a.bio && (
-                        <span className="font-body text-[11px] leading-[16px] text-foreground/60 line-clamp-2">
-                          {a.bio}
-                        </span>
-                      )}
-                    </div>
-                  </Link>
-                ))}
+            <h1 className="mt-10 text-display text-paper sm:mt-14">
+              <span className="block">always</span>
+              <span className="block pl-[7vw] italic text-lime">creating.</span>
+            </h1>
+
+            <div className="mt-10 grid gap-10 sm:mt-14 lg:grid-cols-12 lg:items-end lg:gap-8">
+              <div className="lg:col-span-4">
+                <p className="max-w-[34ch] text-[15px] leading-[1.7] text-paper sm:text-[16px]">
+                  A shared practice by Manuel and Moya. Two people, similar instincts, one
+                  room that stays open.
+                </p>
+
+                <a
+                  href="#manifesto"
+                  className="label mt-8 inline-flex items-center gap-3 text-paper transition-colors duration-150 hover:text-lime"
+                >
+                  <span aria-hidden className="block h-8 w-px bg-line" />
+                  Read the manifesto
+                </a>
               </div>
-            ) : (
-              <p className="font-body text-[12px] text-foreground/60">
-                No featured artists yet.
-              </p>
-            )}
 
-            <Link
-              href="/artists"
-              className="inline-flex items-center gap-1 text-shadcn-primary font-body text-[12px] hover:underline transition-colors w-fit"
-            >
-              See more artists →
-            </Link>
-          </div>
-        </LadderLine>
+              <div className="relative isolate grid grid-cols-2 gap-3 sm:gap-6 lg:col-span-8">
+                <div
+                  aria-hidden
+                  className="dither-field pointer-events-none absolute -inset-x-3 -top-6 bottom-20 z-0"
+                />
 
-        {/* Line 3 — Refined marquee */}
-        <LadderLine side="right" label="Always creating" contentClassName="w-[min(92vw,520px)]">
-          <div className="flex flex-col gap-4">
-            <p className="font-body text-[10px] uppercase tracking-[1px] text-shadcn-muted-foreground">
-              always creating
-            </p>
-            <div className="overflow-hidden">
-              <div className="marquee-refined">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <span
-                    key={i}
-                    className="font-heading text-[22px] sm:text-[26px] text-foreground uppercase shrink-0 pr-6 leading-none select-none"
-                  >
-                    alwayscreating <span className="text-shadcn-primary">✦</span>&nbsp;
-                  </span>
-                ))}
+                <figure className="relative z-10 min-w-0">
+                  <div className="relative aspect-[4/5] overflow-hidden border border-line bg-surface">
+                    <DitherImage
+                      large="/dither/manuel-900.png"
+                      small="/dither/manuel-480.png"
+                      alt="Dithered portrait of Manuel"
+                      sizes="(max-width: 640px) 45vw, 34vw"
+                      priority
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="scanlines absolute inset-0" aria-hidden />
+                  </div>
+                  <figcaption className="mt-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-2">
+                    <span className="font-serif text-[19px] leading-none text-paper sm:text-[26px]">
+                      Manuel
+                    </span>
+                    <span className="label">01 / Founder</span>
+                  </figcaption>
+                </figure>
+
+                <figure className="relative z-10 min-w-0 pt-8 sm:pt-14">
+                  <div className="relative aspect-[4/5] overflow-hidden border border-line bg-surface">
+                    <DitherImage
+                      large="/dither/moya-900.png"
+                      small="/dither/moya-480.png"
+                      alt="Dithered portrait of Moya"
+                      sizes="(max-width: 640px) 45vw, 34vw"
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="scanlines absolute inset-0" aria-hidden />
+                  </div>
+                  <figcaption className="mt-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-2">
+                    <span className="font-serif text-[19px] leading-none text-paper sm:text-[26px]">
+                      Moya
+                    </span>
+                    <span className="label">02 / Founder</span>
+                  </figcaption>
+                </figure>
               </div>
             </div>
           </div>
-        </LadderLine>
+        </section>
 
-        {/* Line 4 — Contact */}
-        <LadderLine side="left" label="Contact" contentClassName="w-[min(92vw,460px)] p-4">
-          <div className="mb-3">
-            <h3 className="font-heading text-[18px] text-foreground">Let&apos;s work together.</h3>
-            <p className="font-body text-[11px] text-foreground/60 mt-1">
-              Interested in joining or collaborating? Send a message.
-            </p>
+        {/* 002 / Manifesto */}
+        <section id="manifesto" className="border-t border-line">
+          <div className="shell py-16 sm:py-24">
+            <SectionMeta index="002" title="Manifesto" aside="Collaboration over catalogue" />
+
+            <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-8">
+              <h2 className="text-title text-paper lg:col-span-7">
+                Two instincts, <span className="italic text-lime">one room.</span> The door
+                stays open.
+              </h2>
+
+              <div className="lg:col-span-5 lg:pt-2">
+                <p className="body-copy">
+                  always creating is the shared practice of Manuel and Moya. They work
+                  together, and they keep arriving at the same ideas from different
+                  directions. The overlap is not a coincidence to smooth out. It is the
+                  material.
+                </p>
+                <p className="body-copy mt-5">
+                  Right now the room holds the two of them. It is not a closed duo. The name
+                  is an invitation to anyone who recognises that instinct: come in, add a
+                  voice, change the shape of the place.
+                </p>
+                <p className="body-copy mt-5">
+                  Nothing here is presented as finished. The work stays in motion, and so
+                  does the room.
+                </p>
+
+                <dl className="mt-8 border-t border-line">
+                  {[
+                    ['Founded by', 'Manuel and Moya'],
+                    ['Working', 'In collaboration'],
+                    ['Room', 'Open to others'],
+                  ].map(([term, detail]) => (
+                    <div
+                      key={term}
+                      className="flex items-baseline justify-between gap-6 border-b border-line py-3"
+                    >
+                      <dt className="label">{term}</dt>
+                      <dd className="text-right font-mono text-[11px] uppercase tracking-[0.1em] text-paper">
+                        {detail}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
           </div>
-          <ContactForm />
-        </LadderLine>
-      </section>
+
+          <div className="grain border-y border-line">
+            <div className="grain-content shell py-10 sm:py-14">
+              <p className="max-w-[22ch] font-serif text-[clamp(2rem,4.6vw,4rem)] italic leading-[1.02] tracking-[-0.02em] text-paper">
+                Keep the process visible.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 003 / Roster */}
+        <section id="roster" className="border-t border-line">
+          <div className="shell py-16 sm:py-24">
+            <SectionMeta index="003" title="In the room" aside="Founding artists, 01 to 02" />
+
+            <div className="mt-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+              <p className="body-copy max-w-[52ch]">
+                Manuel and Moya are the two artists here today. Open a profile to read how
+                each one works.
+              </p>
+              <a
+                href="#collaborate"
+                className="label shrink-0 text-lime transition-colors duration-150 hover:text-paper"
+              >
+                Join the room
+              </a>
+            </div>
+
+            <div className="mt-12">
+              <ArtistCardGrid artists={roster} variant="roster" />
+            </div>
+
+            <p className="label mt-10">Only two, for now. The next name is not decided.</p>
+          </div>
+        </section>
+
+        {/* 004 / Collaboration */}
+        <section id="collaborate" className="border-t border-line">
+          <div className="shell py-12 sm:py-20">
+            <div className="frame bg-ink p-6 sm:p-10 lg:p-14">
+              <SectionMeta index="004" title="Collaboration" aside="An open invitation" />
+
+              <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-12">
+                <div className="lg:col-span-7">
+                  <h2 className="text-title text-paper">
+                    There is room for <span className="italic text-lime">one more.</span>
+                  </h2>
+                  <p className="body-copy mt-6 max-w-[46ch]">
+                    We are two today. If you make things and the process matters more than
+                    the polish, tell us what you are working on. We are looking for the next
+                    voice, not a finished portfolio.
+                  </p>
+                  <a href="#contact" className="btn-lime mt-8">
+                    Start a conversation
+                  </a>
+                </div>
+
+                <div className="lg:col-span-5">
+                  <p className="label">Who we want to hear from</p>
+                  <ul className="mt-4 border-t border-line">
+                    {OPEN_TO.map((item, index) => (
+                      <li
+                        key={item}
+                        className="flex gap-4 border-b border-line py-4"
+                      >
+                        <span className="label shrink-0 text-lime">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        <span className="text-[14px] leading-[1.6] text-paper">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-5 text-[12px] leading-[1.55] text-ash">
+                    There is no application form. Just write.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div aria-hidden className="dither-gradient dither-fade h-[160px] opacity-90 sm:h-[240px]" />
+        </section>
+
+        {/* 005 / Contact */}
+        <section id="contact" className="border-t border-line">
+          <div className="shell py-16 sm:py-24">
+            <SectionMeta index="005" title="Contact" aside="One message reaches both" />
+
+            <div className="mt-10 border border-line bg-surface">
+              <div className="dither-rule-strong" aria-hidden />
+
+              <div className="grid lg:grid-cols-12">
+                <div className="p-5 sm:p-8 lg:col-span-7 lg:p-12">
+                  <h2 className="font-serif text-[clamp(2.2rem,4.2vw,3.7rem)] leading-[0.95] tracking-[-0.02em] text-paper">
+                    Tell us what you are making.
+                  </h2>
+                  <p className="mt-4 max-w-[44ch] text-[14px] leading-[1.65] text-ash">
+                    Collaboration, a question, or a half formed idea. Write once, it reaches
+                    both of us.
+                  </p>
+
+                  <div className="mt-8">
+                    <ContactForm />
+                  </div>
+                </div>
+
+                <aside className="border-t border-line bg-ink p-5 sm:p-8 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-12">
+                  <p className="label text-lime">Stay close</p>
+                  <h3 className="mt-4 font-serif text-[clamp(1.8rem,3vw,2.6rem)] leading-[1] tracking-[-0.02em] text-paper">
+                    Occasional notes from the room.
+                  </h3>
+                  <p className="mt-4 max-w-[38ch] text-[14px] leading-[1.65] text-ash">
+                    What we are making, who is joining, what is still unfinished. No
+                    schedule, no noise.
+                  </p>
+
+                  <div className="mt-6">
+                    <NewsletterForm />
+                  </div>
+
+                  <div className="dither-rule my-8" aria-hidden />
+
+                  <dl>
+                    {[
+                      ['Reach', 'One message reaches both of us.'],
+                      ['Privacy', 'Your details stay here. Never shared with third parties.'],
+                    ].map(([term, detail]) => (
+                      <div key={term} className="border-t border-line py-4 first:border-t-0 first:pt-0">
+                        <dt className="label">{term}</dt>
+                        <dd className="mt-2 text-[13px] leading-[1.6] text-paper">{detail}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </aside>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
 
       <Footer />
     </>

@@ -1,64 +1,104 @@
-import Tag from './ui/Tag'
-import ParallaxImage from './ParallaxImage'
+import Link from 'next/link'
+import DitherImage from './DitherImage'
 
-export default function ArtistCard({ artist, onSelect, index = 0 }) {
-  const { name, slug, bio, discipline = [], stats = {}, profileImage, social = {}, email } = artist
+function Portrait({ artist, sizes }) {
+  const { name, image, imageSmall, profileImage } = artist
+
+  if (image) {
+    return (
+      <DitherImage
+        large={image}
+        small={imageSmall}
+        alt={`Dithered portrait of ${name}`}
+        sizes={sizes}
+        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+      />
+    )
+  }
+
+  if (profileImage) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={profileImage}
+        alt={`Portrait of ${name}`}
+        loading="lazy"
+        decoding="async"
+        className="h-full w-full object-cover grayscale transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+      />
+    )
+  }
 
   return (
-    <div
-      className="animate-fade-up overflow-hidden rounded-lg border border-subtle bg-card group transition-all duration-200 hover:border-border hover:shadow-sm flex flex-col"
-      style={{ animationDelay: `${index * 120}ms` }}
-    >
-      {/* Image */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-primary">
-        {profileImage ? (
-          <ParallaxImage src={profileImage} alt={name} />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-text-muted text-[10px] tracking-[0.8px] uppercase font-body">
-            No image
-          </div>
-        )}
-        {discipline[0] && (
-          <div className="absolute top-3 left-3">
-            <Tag>{discipline[0]}</Tag>
-          </div>
-        )}
-      </div>
-
-      {/* Body */}
-      <div className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-heading text-[18px] text-text-primary leading-tight">
-          <span className="name-underline">{name}</span>
-        </h3>
-        {bio && (
-          <p className="text-[12px] font-body text-text-secondary line-clamp-3 leading-[1.6]">{bio}</p>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div className="px-4 pb-4">
-        <div className="border-t border-subtle pt-3 flex items-center justify-between">
-          <div className="flex items-center gap-3 text-[11px] font-body text-text-muted">
-            {social.instagram ? (
-              <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-brand transition-colors">social</a>
-            ) : (
-              <span className="opacity-30 cursor-default">social</span>
-            )}
-            <span>·</span>
-            {email ? (
-              <a href={`mailto:${email}`} className="hover:text-brand transition-colors">contact</a>
-            ) : (
-              <span className="opacity-30 cursor-default">contact</span>
-            )}
-          </div>
-        </div>
-        <button
-          onClick={() => onSelect?.(artist)}
-          className="mt-2 text-brand text-[12px] font-body hover:underline text-left transition-colors duration-150"
-        >
-          View profile →
-        </button>
-      </div>
+    <div className="flex h-full w-full items-center justify-center bg-surface">
+      <span className="label">Portrait pending</span>
     </div>
+  )
+}
+
+export default function ArtistCard({ artist, onSelect, index = 0, variant = 'grid' }) {
+  const { name, slug, bio, intro, discipline = [] } = artist
+  const isRoster = variant === 'roster'
+  const sizes = isRoster
+    ? '(max-width: 767px) 100vw, 45vw'
+    : '(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw'
+
+  const action = onSelect ? (
+    <button
+      type="button"
+      onClick={() => onSelect(artist)}
+      className="label shrink-0 text-lime transition-colors duration-150 hover:text-paper"
+    >
+      Open profile
+    </button>
+  ) : (
+    <Link
+      href={`/artists/${slug}`}
+      className="label shrink-0 text-lime transition-colors duration-150 hover:text-paper"
+    >
+      Open profile
+    </Link>
+  )
+
+  return (
+    <article
+      className="group flex animate-rise flex-col border-t border-line pt-4"
+      style={{ animationDelay: `${index * 90}ms` }}
+    >
+      <div className="flex items-baseline justify-between gap-4">
+        <span className="label text-lime">{String(index + 1).padStart(2, '0')}</span>
+        <span className="label text-right">{discipline[0] || 'Artist'}</span>
+      </div>
+
+      <div className="relative mt-4 aspect-[4/5] overflow-hidden border border-line bg-surface transition-colors duration-300 group-hover:border-ash">
+        <Portrait artist={artist} sizes={sizes} />
+        <div className="scanlines absolute inset-0" aria-hidden />
+      </div>
+
+      <div className="mt-5 flex items-start justify-between gap-4">
+        <h3
+          className={`font-serif leading-[0.9] tracking-[-0.02em] text-paper ${
+            isRoster
+              ? 'text-[clamp(2.1rem,3.6vw,3.4rem)]'
+              : 'text-[clamp(1.7rem,2.6vw,2.2rem)]'
+          }`}
+        >
+          {name}
+        </h3>
+        {action}
+      </div>
+
+      <p
+        className={`mt-3 max-w-[44ch] text-paper ${
+          isRoster
+            ? 'text-[14px] leading-[1.65] sm:text-[15px]'
+            : 'text-[13px] leading-[1.6]'
+        }`}
+      >
+        {intro || bio}
+      </p>
+
+      <div className="dither-rule mt-6" aria-hidden />
+    </article>
   )
 }

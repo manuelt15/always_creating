@@ -10,76 +10,103 @@ module.exports = {
     },
     extend: {
       colors: {
-        // ── Original design tokens (kept for legacy components) ──
-        primary:   'var(--color-primary)',
-        secondary: 'var(--color-secondary)',
-        card:      'var(--color-card)',
-        footer:    'var(--color-footer)',
-        border: {
-          DEFAULT: 'var(--color-border)',
-          subtle:  'var(--color-border-subtle)',
+        // ── always creating palette ──────────────────────────
+        ink: 'var(--ink)',
+        paper: 'var(--paper)',
+        lime: 'var(--lime)',
+        ash: 'var(--ash)',
+        line: {
+          DEFAULT: 'var(--line)',
+          strong: 'var(--line-strong)',
         },
-        text: {
-          primary:   'var(--color-text-primary)',
-          secondary: 'var(--color-text-secondary)',
-          muted:     'var(--color-text-muted)',
-        },
-        brand: {
-          DEFAULT: '#1777e5',
-          dark:    '#0F51AB',
-          xdark:   '#0A3272',
-          light:   '#61A7F9',
+        surface: {
+          DEFAULT: 'var(--surface)',
+          raised: 'var(--surface-raised)',
         },
 
-        // ── shadcn semantic tokens ──
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        // ── semantic aliases ─────────────────────────────────
+        background: 'var(--ink)',
+        foreground: 'var(--paper)',
+
+        // ── legacy aliases, kept so the remaining routes render ──
+        primary: 'var(--ink)',
+        secondary: 'var(--surface)',
+        card: 'var(--surface)',
+        footer: 'var(--ink)',
+        border: {
+          DEFAULT: 'var(--line)',
+          subtle: 'var(--line)',
+        },
+        text: {
+          primary: 'var(--paper)',
+          secondary: 'var(--paper)',
+          muted: 'var(--ash)',
+        },
+        brand: {
+          DEFAULT: 'var(--lime)',
+          dark: 'var(--paper)',
+          light: 'var(--lime)',
+        },
+
+        // ── shadcn semantic tokens ───────────────────────────
         shadcn: {
           primary: {
-            DEFAULT: 'hsl(var(--primary))',
-            foreground: 'hsl(var(--primary-foreground))',
+            DEFAULT: 'var(--lime)',
+            foreground: 'var(--ink)',
           },
           secondary: {
-            DEFAULT: 'hsl(var(--secondary))',
-            foreground: 'hsl(var(--secondary-foreground))',
+            DEFAULT: 'var(--surface-raised)',
+            foreground: 'var(--paper)',
           },
           destructive: {
-            DEFAULT: 'hsl(var(--destructive))',
-            foreground: 'hsl(var(--destructive-foreground))',
+            DEFAULT: 'var(--paper)',
+            foreground: 'var(--ink)',
           },
           muted: {
-            DEFAULT: 'hsl(var(--muted))',
-            foreground: 'hsl(var(--muted-foreground))',
+            DEFAULT: 'var(--surface)',
+            foreground: 'var(--ash)',
           },
           accent: {
-            DEFAULT: 'hsl(var(--accent))',
-            foreground: 'hsl(var(--accent-foreground))',
+            DEFAULT: 'var(--surface-raised)',
+            foreground: 'var(--paper)',
           },
           popover: {
-            DEFAULT: 'hsl(var(--popover))',
-            foreground: 'hsl(var(--popover-foreground))',
+            DEFAULT: 'var(--surface)',
+            foreground: 'var(--paper)',
           },
           card: {
-            DEFAULT: 'hsl(var(--card))',
-            foreground: 'hsl(var(--card-foreground))',
+            DEFAULT: 'var(--surface)',
+            foreground: 'var(--paper)',
           },
         },
-        'shadcn-border': 'hsl(var(--border))',
-        'shadcn-input': 'hsl(var(--input))',
-        'shadcn-ring': 'hsl(var(--ring))',
+        'shadcn-border': 'var(--line)',
+        'shadcn-input': 'var(--surface)',
+        'shadcn-ring': 'var(--lime)',
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        DEFAULT: '0px',
+        lg: '0px',
+        md: '0px',
+        sm: '0px',
       },
       fontFamily: {
-        heading: ['var(--font-cy)', 'sans-serif'],
-        display: ['"Courier Prime"', 'monospace'],
-        body:    ['"Courier Prime"', 'monospace'],
-        ui:      ['Inter', 'sans-serif'],
+        sans:     ['var(--font-geist)', 'system-ui', 'sans-serif'],
+        serif:    ['var(--font-instrument)', 'Georgia', 'serif'],
+        mono:     ['var(--font-geist-mono)', 'ui-monospace', 'monospace'],
+        heading:  ['var(--font-instrument)', 'Georgia', 'serif'],
+        display:  ['var(--font-instrument)', 'Georgia', 'serif'],
+        body:     ['var(--font-geist)', 'system-ui', 'sans-serif'],
+        ui:       ['var(--font-geist)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
+        display: ['clamp(4.25rem, 13.5vw, 11.5rem)', { lineHeight: '0.8', letterSpacing: '-0.035em' }],
+        title:   ['clamp(2.75rem, 6vw, 6rem)', { lineHeight: '0.95', letterSpacing: '-0.02em' }],
+        heading: ['clamp(1.75rem, 3vw, 2.5rem)', { lineHeight: '1.05', letterSpacing: '-0.015em' }],
+        body:    ['16px', { lineHeight: '1.7' }],
+        small:   ['13px', { lineHeight: '1.55' }],
+        micro:   ['11px', { lineHeight: '1.4' }],
+
+        // legacy route aliases
         hero:    ['50px', { lineHeight: '63px', letterSpacing: '-1px' }],
         section: ['44px', { lineHeight: '52px' }],
         hxl:     ['36px', { lineHeight: '1.2' }],
@@ -104,10 +131,15 @@ module.exports = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        rise: {
+          from: { opacity: '0', transform: 'translateY(14px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        rise: 'rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
       },
     },
   },

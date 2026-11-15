@@ -25,52 +25,90 @@ export default function ContactForm() {
     }
   }
 
-  const inputClass = "w-full bg-primary border border-subtle rounded-[8px] px-4 py-3 text-text-primary placeholder:text-text-muted font-body text-[13px] focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-colors duration-150"
-  const labelClass = "block font-body text-[10px] tracking-[1px] uppercase text-text-muted mb-1.5"
+  if (status === 'success') {
+    return (
+      <div className="border border-line bg-ink px-5 py-10 sm:px-8">
+        <p className="font-serif text-[clamp(1.8rem,3vw,2.4rem)] leading-none text-paper">
+          Message sent.
+        </p>
+        <p className="mt-3 max-w-[36ch] text-[14px] leading-[1.6] text-ash">
+          We will be in touch soon.
+        </p>
+      </div>
+    )
+  }
 
   return (
-    <div className="bg-card border border-subtle rounded-lg p-6">
-      {status === 'success' ? (
-        <div className="border border-brand/20 bg-brand/5 rounded-[8px] px-6 py-10 text-brand font-body text-sm text-center">
-          Message sent — we'll be in touch soon.
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label htmlFor="contact-name" className="field-label">
+            Name
+          </label>
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            placeholder="Your full name"
+            value={form.name}
+            onChange={handleChange}
+            required
+            autoComplete="name"
+            className="field"
+          />
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label className={labelClass}>Name</label>
-            <input name="name" type="text" placeholder="Your full name" value={form.name} onChange={handleChange} required className={inputClass} />
-          </div>
-          <div>
-            <label className={labelClass}>Email</label>
-            <input name="email" type="email" placeholder="your@email.com" value={form.email} onChange={handleChange} required className={inputClass} />
-          </div>
-          <div>
-            <label className={labelClass}>Message</label>
-            <textarea
-              name="message"
-              placeholder="Tell us about your project..."
-              value={form.message}
-              onChange={handleChange}
-              required
-              rows={5}
-              className={`${inputClass} resize-none`}
-            />
-          </div>
-          {status === 'error' && (
-            <p className="text-red-500 text-xs font-body">Something went wrong. Try again.</p>
-          )}
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="w-full inline-flex items-center justify-center gap-2 font-body font-bold text-[13px] bg-brand text-white rounded-[8px] py-3 hover:bg-brand-dark active:scale-[0.98] transition-all duration-150 disabled:opacity-40"
-          >
-            {status === 'loading' ? 'Sending…' : 'Send message →'}
-          </button>
-          <p className="text-[11px] font-body text-text-muted text-center">
-            Your information will not be shared with third parties.
-          </p>
-        </form>
+        <div>
+          <label htmlFor="contact-email" className="field-label">
+            Email
+          </label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            placeholder="your@email.com"
+            value={form.email}
+            onChange={handleChange}
+            required
+            autoComplete="email"
+            className="field"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="contact-message" className="field-label">
+          Message
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          placeholder="Tell us what you are working on"
+          value={form.message}
+          onChange={handleChange}
+          required
+          rows={5}
+          className="field resize-none"
+        />
+      </div>
+
+      {status === 'error' && (
+        <p className="border-l border-paper pl-3 text-[13px] leading-[1.5] text-paper">
+          Something went wrong. Try again.
+        </p>
       )}
-    </div>
+
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <p className="max-w-[34ch] text-[11px] leading-[1.55] text-ash">
+          Your information will not be shared with third parties.
+        </p>
+        <button
+          type="submit"
+          disabled={status === 'loading'}
+          className="btn-lime w-full shrink-0 disabled:pointer-events-none disabled:opacity-40 sm:w-auto"
+        >
+          {status === 'loading' ? 'Sending' : 'Send message'}
+        </button>
+      </div>
+    </form>
   )
 }

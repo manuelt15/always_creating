@@ -26,36 +26,41 @@ export default function NewsletterForm() {
 
   if (status === 'success') {
     return (
-      <p className="font-body text-[13px] text-brand">
-        You're in — we'll be in touch soon.
+      <p className="border border-line px-4 py-3 font-mono text-[10px] uppercase leading-[1.5] tracking-[0.14em] text-lime">
+        You are in. We will be in touch soon.
       </p>
     )
   }
 
   return (
-    <div className="flex flex-col gap-2 w-full max-w-lg">
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+    <div className="flex w-full max-w-lg flex-col gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <label htmlFor="newsletter-email" className="sr-only">
+          Email address
+        </label>
         <input
+          id="newsletter-email"
           type="email"
           placeholder="Your email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="flex-1 bg-card border border-subtle rounded-[8px] px-4 py-3 text-text-primary placeholder:text-text-muted font-body text-[13px] focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-colors duration-150"
+          autoComplete="email"
+          className="field"
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="shrink-0 inline-flex items-center justify-center font-body font-bold text-[13px] bg-brand text-white rounded-[8px] px-6 py-3 hover:bg-brand-dark transition-all duration-150 disabled:opacity-40"
+          className="btn-line w-full disabled:pointer-events-none disabled:opacity-40"
         >
-          {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
+          {status === 'loading' ? 'Subscribing' : 'Subscribe'}
         </button>
       </form>
       {status === 'duplicate' && (
-        <p className="font-body text-[11px] text-text-muted">That email is already subscribed.</p>
+        <p className="text-[12px] leading-[1.5] text-ash">That email is already subscribed.</p>
       )}
       {status === 'error' && (
-        <p className="font-body text-[11px] text-red-500">Something went wrong. Try again.</p>
+        <p className="text-[12px] leading-[1.5] text-paper">Something went wrong. Try again.</p>
       )}
     </div>
   )

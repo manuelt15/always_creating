@@ -1,6 +1,6 @@
 # alwayscreating
 
-A curated platform for discovering creatives — built for artists who exist beyond a single discipline.
+A single-page home for two artists who keep making, with an open invitation to more. Built with a dither / 1-bit visual system.
 
 ## Stack
 
@@ -13,11 +13,12 @@ A curated platform for discovering creatives — built for artists who exist bey
 
 ## Features
 
+- One-page home: hero, manifesto, roster, collaboration and contact
 - Artist directory with profile cards and overlay previews
 - Contact form saved to MongoDB
 - Newsletter subscription list
-- Dark / light mode
-- Fully responsive
+- Fixed dark palette with dithered 1-bit imagery
+- Fully responsive from 360px
 
 ## Datos y correo
 
