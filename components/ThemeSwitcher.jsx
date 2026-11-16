@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { flushSync } from 'react-dom'
 import {
   SegmentedControl,
   SegmentedControlIndicator,
@@ -18,9 +19,16 @@ export default function ThemeSwitcher() {
     applyTheme(current)
   }, [])
 
+  // Fundido entre temas con View Transitions; sin soporte o con movimiento reducido, cambio directo.
+  // flushSync hace que el control ya marque el tema nuevo cuando se toma la captura final.
   const change = (next) => {
-    setTheme(next)
-    applyTheme(next)
+    const swap = () => {
+      flushSync(() => setTheme(next))
+      applyTheme(next)
+    }
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!document.startViewTransition || reduce) return swap()
+    document.startViewTransition(swap)
   }
 
   return (

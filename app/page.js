@@ -5,6 +5,7 @@ import ExperimentCard from '@/components/ExperimentCard'
 import ContactForm from '@/components/ContactForm'
 import DitherField from '@/components/DitherField'
 import ThemeSwitcher from '@/components/ThemeSwitcher'
+import RevealList from '@/components/RevealList'
 import { sortedExperiments } from '@/lib/experiments'
 import { PORTFOLIO_URL, PORTFOLIO_LABEL } from '@/lib/site'
 
@@ -31,12 +32,14 @@ export default function HomePage() {
 
             <div className="relative pb-32 pt-32 sm:pb-44">
               <h1 className="text-display text-paper">
-                <span className="block">always</span>
-                <span className="block pl-[7vw] italic text-accent">creating.</span>
+                <span className="enter block">always</span>
+                <span className="enter block pl-[7vw] italic text-accent" style={{ '--i': 1 }}>
+                  creating.
+                </span>
               </h1>
 
               <div className="mt-12 grid gap-10 sm:mt-16 lg:grid-cols-12 lg:items-end lg:gap-8">
-                <div className="hero-copy lg:col-span-6">
+                <div className="hero-copy enter lg:col-span-6" style={{ '--i': 2 }}>
                   <p className="max-w-[44ch] text-[15px] leading-[1.7] text-paper sm:text-[16px]">
                     Mi forma de entrenar la creatividad: probar, equivocarme y volver a probar. Aquí
                     dejo lo que me va saliendo por el camino.
@@ -51,7 +54,7 @@ export default function HomePage() {
                 </div>
 
                 {PORTFOLIO_URL ? (
-                  <div className="lg:col-span-4 lg:col-start-9">
+                  <div className="enter lg:col-span-4 lg:col-start-9" style={{ '--i': 3 }}>
                     <div className="border border-line border-l-accent bg-ink px-5 py-4">
                       <p className="label text-accent">Trabajo profesional</p>
                       <p className="mt-3 text-[13px] leading-[1.6] text-ash">
@@ -86,13 +89,13 @@ export default function HomePage() {
               reciente, primero.
             </p>
 
-            <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <RevealList className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {experiments.map((experiment) => (
                 <li key={experiment.slug}>
                   <ExperimentCard experiment={experiment} />
                 </li>
               ))}
-            </ul>
+            </RevealList>
           </div>
 
           {/* Franja entre secciones: el mismo campo del hero, fundido arriba y abajo. */}

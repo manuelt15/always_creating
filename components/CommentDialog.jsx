@@ -36,7 +36,7 @@ export default function CommentDialog({ experiment, experiments }) {
           </div>
           <DialogClose
             aria-label="Cerrar"
-            className="-mr-2 -mt-1 grid h-10 w-10 shrink-0 place-items-center text-ash transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+            className="-mr-2 -mt-1 grid h-10 w-10 shrink-0 place-items-center text-ash press hover:text-paper focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
           >
             <X aria-hidden="true" size={18} strokeWidth={1.5} />
           </DialogClose>

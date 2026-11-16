@@ -8,7 +8,7 @@ export default function ExperimentCard({ experiment }) {
   return (
     <Link
       href={`/lab/${slug}`}
-      className="group flex h-full flex-col border border-line bg-surface transition-colors duration-150 hover:border-line-strong"
+      className="group flex h-full flex-col border border-line bg-surface card-press hover:border-line-strong"
     >
       {cover ? (
         <div className="scanlines relative h-28 overflow-hidden bg-ink sm:h-36">

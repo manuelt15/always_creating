@@ -101,7 +101,7 @@ export default function ContactForm({
         tabIndex={-1}
         role="status"
         aria-live="polite"
-        className="border border-line bg-ink px-5 py-10 outline-none sm:px-8"
+        className="notice-enter border border-line bg-ink px-5 py-10 outline-none sm:px-8"
       >
         <p className="label text-accent">Enviado</p>
         <p className="mt-4 font-serif text-[clamp(1.8rem,3vw,2.4rem)] leading-none text-paper">

@@ -2,6 +2,8 @@
 module.exports = {
   content: ['./app/**/*.{js,jsx}', './components/**/*.{js,jsx}', './experiments/**/*.{js,jsx}'],
   darkMode: 'class',
+  // hover: solo donde hay puntero de verdad; en móvil el toque no deja el hover pegado.
+  future: { hoverOnlyWhenSupported: true },
   theme: {
     container: {
       center: true,

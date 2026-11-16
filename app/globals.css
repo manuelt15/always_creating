@@ -20,6 +20,13 @@
   --dither: 80, 128, 255;
 }
 
+/* Curvas de movimiento, comunes a los tres temas */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 /* Temas: el azul es el de :root. Lo aplica el script de app/layout.js antes de pintar. */
 :root[data-theme='naranja'] {
   --ink: #120A06;
@@ -137,6 +144,64 @@
 
   .btn-line {
     @apply inline-flex items-center justify-center gap-3 whitespace-nowrap border border-line px-5 py-3 font-mono text-[10px] uppercase leading-none tracking-[0.16em] text-paper transition-colors duration-150 hover:border-accent hover:text-accent sm:text-[11px];
+  }
+
+  /* Al pulsar, lo pulsable cede un poco: confirma que el toque ha llegado */
+  .btn-primary,
+  .btn-line,
+  .press {
+    transition-property: color, background-color, border-color, transform;
+    transition-duration: 150ms, 150ms, 150ms, 160ms;
+    transition-timing-function: ease, ease, ease, var(--ease-out);
+  }
+
+  .btn-primary:active,
+  .btn-line:active,
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  /* Cards: superficie grande, así que cede menos */
+  .card-press {
+    transition:
+      border-color 150ms ease,
+      transform 200ms var(--ease-out);
+  }
+
+  .card-press:active {
+    transform: scale(0.99);
+  }
+
+  /* Entrada del hero, escalonada con --i. backwards: al terminar no deja transform puesto. */
+  .enter {
+    animation: enter 450ms var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 50ms);
+  }
+
+  /* Cards de 001: las oculta components/RevealList.jsx solo si están fuera de pantalla */
+  [data-reveal] {
+    transition:
+      opacity 400ms var(--ease-out),
+      transform 500ms var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  [data-reveal='hidden'] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  /* Aviso de enviado y errores: aparecen con un fundido, no de golpe */
+  .notice-enter {
+    transition:
+      opacity 200ms var(--ease-out),
+      translate 200ms var(--ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .enter {
+      animation: none;
+    }
   }
 
   .field-label {
@@ -295,10 +360,18 @@
 
   .field-error {
     @apply mt-2 block text-[12px] leading-[1.4] text-accent;
+    transition: opacity 150ms var(--ease-out);
   }
 
   .select-trigger {
-    @apply flex h-[50px] w-full items-center justify-between gap-3 border border-line bg-ink px-3.5 text-left font-sans text-[16px] leading-none text-paper transition-colors duration-150 hover:border-line-strong focus-visible:border-accent focus-visible:outline-none data-[open]:border-accent;
+    @apply flex h-[50px] w-full items-center justify-between gap-3 border border-line bg-ink px-3.5 text-left font-sans text-[16px] leading-none text-paper hover:border-line-strong focus-visible:border-accent focus-visible:outline-none data-[open]:border-accent;
+    transition:
+      border-color 150ms ease,
+      transform 160ms var(--ease-out);
+  }
+
+  .select-trigger:active {
+    transform: scale(0.99);
   }
 
   .select-chevron {
@@ -320,8 +393,8 @@
     color: var(--paper);
     transform-origin: var(--transform-origin);
     transition:
-      opacity 140ms ease-out,
-      translate 140ms ease-out;
+      opacity 140ms var(--ease-out),
+      translate 140ms var(--ease-out);
   }
 
   .select-content:is([data-starting-style], [data-ending-style]) {
@@ -364,7 +437,7 @@
     box-shadow: inset 0 -1px 0 var(--accent);
     transition-property: left, width;
     transition-duration: 180ms;
-    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+    transition-timing-function: var(--ease-out);
   }
 
   .theme-switch-item {
@@ -414,13 +487,14 @@
     color: var(--paper);
     padding: 0;
     transition:
-      opacity 200ms ease-out,
-      translate 260ms cubic-bezier(0.2, 0, 0, 1);
+      opacity 200ms var(--ease-out),
+      scale 240ms var(--ease-out);
   }
 
+  /* Modal: crece desde el centro, no desde el botón que lo abre */
   .comment-dialog:is([data-starting-style], [data-ending-style]) {
     opacity: 0;
-    translate: 0 12px;
+    scale: 0.97;
   }
 
   .comment-dialog[data-ending-style] {
@@ -453,7 +527,7 @@
     background: var(--fill);
     transition-property: left, width;
     transition-duration: 180ms;
-    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+    transition-timing-function: var(--ease-out);
   }
 
   .door-kind-item {
@@ -479,4 +553,30 @@
   50% {
     opacity: 0.35;
   }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Estado inicial de lo que entra al montarse: aviso de enviado y errores de campo */
+@starting-style {
+  .notice-enter {
+    opacity: 0;
+    translate: 0 6px;
+  }
+
+  .field-error {
+    opacity: 0;
+  }
+}
+
+/* Cambio de tema: fundido corto entre la página vieja y la nueva (lib/theme.js) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
+  animation-timing-function: ease;
 }

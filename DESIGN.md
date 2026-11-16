@@ -138,7 +138,7 @@ Contraste sobre el campo del hero:
 - `Navbar`: server component, sin toggle de tema. En la home se superpone al hero, absoluta y transparente; en el resto de rutas queda en el flujo sobre `ink`. Solo lleva el enlace a Experimentos, el indicador "Laboratorio" y el botón "Dejar una idea". El portafolio se enlaza desde la card del hero y el pie. El menú móvil es una fila de anclas con scroll horizontal, sin línea de separación.
 - `SectionMeta`: número, título y nota al margen. La numeración es la columna vertebral de la página.
 - `ExperimentCard`: portada (solo en diseños), número, tipo, título, resumen, estado, fecha y medio. Toda la card es un enlace a `/lab/<slug>`. El estado "En marcha" lleva el punto `accent` que late; el resto, un cuadrado `ash`.
-- `CommentDialog`: botón "Comentar" y overlay con `Dialog` de ui-sdk (Escape, clic fuera, foco atrapado y devuelto al botón). Fondo `ink` al 82 %, panel `surface` de hasta 600 px con banda de puntos arriba, entrada con fundido y 12 px de subida, sin animación con `prefers-reduced-motion`. Dentro va `ContactForm` con el experimento fijado y el selector "Sobre" oculto. Cada apertura monta un formulario limpio; tras enviar, el foco pasa al aviso y "Volver al experimento" cierra.
+- `CommentDialog`: botón "Comentar" y overlay con `Dialog` de ui-sdk (Escape, clic fuera, foco atrapado y devuelto al botón). Fondo `ink` al 82 %, panel `surface` de hasta 600 px con banda de puntos arriba, entrada con fundido y desde `scale(0.97)`, centrado, sin animación con `prefers-reduced-motion`. Dentro va `ContactForm` con el experimento fijado y el selector "Sobre" oculto. Cada apertura monta un formulario limpio; tras enviar, el foco pasa al aviso y "Volver al experimento" cierra.
 - `ContactForm` (la puerta): `SegmentedControl` de ui-sdk para idea o comentario (indicador `fill` con texto `on-fill`), `Select` de ui-sdk para el experimento (sin `<select>` nativo: disparador `.select-trigger` como un campo más, lista `.select-content` sobre `surface-raised`, opción resaltada en `ink` y la elegida en `accent` con su check) y los campos dentro de `Field`. Los campos con error llevan el borde `accent`. El mensaje tiene contador hasta 2000 caracteres. El botón dice "Enviar". Tras enviar, aviso con "Escribir otro" (o la acción que pase el overlay). Mismo doble opt-in que antes.
 - `Footer`: wordmark a sangre y franja final con © y lema.
 - `app/not-found.js`: 404 propia con cabecera, mensaje y botón a los experimentos.
@@ -151,6 +151,18 @@ La librería aporta comportamiento, no aspecto. Los estilos siguen saliendo de `
 - **Campos**: `Field` conecta `FieldLabel`, el control (`Input` o `Textarea`) y `FieldError`. El estado `invalid` se enciende con los errores que ya calculaba el formulario, y `Field` escribe `aria-invalid` y `aria-describedby`. Los mensajes y el flujo de envío no cambian.
 
 Antes de tocar el formulario, lee `node_modules/@ui-sdk/react/docs/llms.txt`. Este repo no tiene linter: se verifica con `npm run build` y `npm test`.
+
+## Movimiento
+
+Criterios de Emil Kowalski: solo se anima lo que tiene un motivo, casi todo por debajo de 300 ms y con curvas propias (`--ease-out`, `--ease-in-out`, `--ease-drawer` en `:root` de `app/globals.css`). Nunca `ease-in` ni `transition: all`.
+
+- **Pulsar**: `.btn-primary`, `.btn-line` y `.press` ceden a `scale(0.97)` en 160 ms; las cards (`.card-press`) y el desplegable, a `0.99`.
+- **Hover**: solo con puntero fino (`hoverOnlyWhenSupported` en Tailwind), para que en móvil no se quede pegado.
+- **Hero**: entrada escalonada (`.enter` con `--i`, 50 ms entre piezas, 450 ms, opacidad y 8 px). Solo al cargar la portada.
+- **Cards de 001**: `RevealList` las revela una vez al entrar en pantalla, 60 ms entre cada una. Solo oculta las que están por debajo del borde al montarse: lo visible no parpadea y sin JavaScript todo se ve.
+- **Tema**: fundido de 200 ms con View Transitions (`ThemeSwitcher`); sin soporte, cambio directo.
+- **Estados**: el aviso de enviado (`.notice-enter`) y los errores de campo entran con `@starting-style`.
+- Los selectores segmentados deslizan su indicador en 180 ms; el desplegable de "Sobre" sale de su botón en 140 ms.
 
 ## Accesibilidad
 
