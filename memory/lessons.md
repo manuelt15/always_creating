@@ -72,3 +72,11 @@ pero no valida nada. La verificación real es `npm run build` y `npm test`.
 ## Los assets dither se regeneran
 
 `tools/generate-dither.py` reproduce los PNG. Comprobar con `sha256sum -c` en vez de fiarse del ojo.
+
+## Para probar movimiento hace falta un navegador que pinte
+
+El panel del navegador integrado estaba oculto: `requestAnimationFrame` no llegaba, `innerHeight` era 0
+y las transiciones se quedaban congeladas, así que parecía que el revelado de cards no funcionaba.
+Fix: Chrome sin ventana por DevTools (`--headless=new --remote-debugging-port`, script de Node con el
+`WebSocket` nativo) y muestrear valores a mitad de animación. **Regla: antes de depurar una animación,
+comprobar que `requestAnimationFrame` se ejecuta; si no, cambiar de navegador, no de código.**

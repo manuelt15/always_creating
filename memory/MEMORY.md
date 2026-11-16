@@ -7,6 +7,7 @@ Baseline enlaces rotos: 0 (2026-11-15)
 ## Índice
 
 - [Pendiente](pending.md) — lo que queda abierto. **Leer primero.**
+- [Cierre 2026-11-16: animaciones y DESIGNERS](handovers/HANDOVER-2026-11-16-animaciones-y-designers.md) - movimiento con criterio de Emil y E/003 con los carteles que venían del portafolio; en producción.
 - [Cierre 2026-11-15 — laboratorio personal](handovers/HANDOVER-2026-11-15-laboratorio-personal.md) — la web pasa a laboratorio de Manuel: experimentos, tres temas, formulario nuevo y correos; en producción.
 - [Cierre 2026-11-08 — README, DESIGN y validación](handovers/HANDOVER-2026-11-08-readme-design-validacion.md) — documentación al día, sistema de diseño escrito y perfil de artista arreglado.
 - [Lecciones](lessons.md) — errores encontrados y su porqué.
