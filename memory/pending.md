@@ -8,3 +8,6 @@
   Resend). Manuel lo quiere cambiar él tras sus pruebas; en Vercel no se ha comprobado el valor, solo
   que los correos le llegan en la preview.
 - **E/002 Retratos de un bit**: el texto lo escribió Claude como ejemplo; Manuel lo sustituirá.
+- **E/003 DESIGNERS** (desde el 2026-11-16): el "qué aprendí" lo redactó Claude como borrador; Manuel
+  lo revisa. Errata en el cartel claro: "La forma como **leguaje**" en
+  `public/lab/designers/sora-k.jpg`. La corrige Manuel reexportando de Figma (venía del portafolio).

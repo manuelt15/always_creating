@@ -17,7 +17,7 @@ export default function ExperimentCard({ experiment }) {
             alt=""
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover opacity-80 transition-opacity duration-150 group-hover:opacity-100"
+            className="h-full w-full object-cover object-top opacity-80 transition-opacity duration-150 group-hover:opacity-100"
           />
         </div>
       ) : (
