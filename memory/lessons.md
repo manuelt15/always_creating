@@ -73,6 +73,22 @@ pero no valida nada. La verificación real es `npm run build` y `npm test`.
 
 `tools/generate-dither.py` reproduce los PNG. Comprobar con `sha256sum -c` en vez de fiarse del ojo.
 
+## Con `next dev`, `127.0.0.1` deja la página sin JavaScript
+
+Next 16 bloquea los recursos de cliente cuando se entra por `127.0.0.1` («Blocked cross-origin
+request to Next.js dev resource /_next/webpack-hmr»). La página se ve maquetada pero **no
+hidrata**, así que los efectos no arrancan: el canvas del hero se queda en 300×150 y sin un
+píxel pintado. Me pasó y di por hecho que había roto el efecto. **Regla: para probar
+comportamiento en local, `http://localhost:PUERTO`, nunca `127.0.0.1`; y si un canvas está en
+su tamaño por defecto, el componente no se está ejecutando.**
+
+## Los assets estánticos van en `public/` y se sirven tal cual
+
+`public/prototipos/hermes-controller/` sirve el build de Vite del repo del prototipo sin pasar
+por React. Ventaja: lo que se ve es lo que hay en el repo, sin port que se desvíe. Coste: se
+actualiza a mano (recompilar con `--base=/prototipos/hermes-controller/` y copiar `dist`). Si
+alguna vez hay dos prototipos, conviene automatizarlo antes de que se olvide uno.
+
 ## Para probar movimiento hace falta un navegador que pinte
 
 El panel del navegador integrado estaba oculto: `requestAnimationFrame` no llegaba, `innerHeight` era 0
