@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hermes · Controlador de hogar (UI SDK)</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23ebebe9'/><circle cx='16' cy='16' r='5' fill='%23ff4f00'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/prototipos/hermes-controller/assets/index-CqWkORvE.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototipos/hermes-controller/assets/index-B609KJBU.css">
+</head>
+<body>
+<div class="wrap">
+  <hm-home id="frame" aria-label="Casa">
+    <div class="grid">
+      <div class="screen" aria-live="polite">
+        <div class="row">
+          <span class="room" id="room">salón</span>
+          <ui-toggle-group id="roomG" aria-label="Habitación" default-value="salon" deselectable="false" loop>
+            <ui-toggle value="salon"><button class="dot" aria-label="Salón"></button></ui-toggle>
+            <ui-toggle value="dormitorio"><button class="dot" aria-label="Dormitorio"></button></ui-toggle>
+            <ui-toggle value="cocina"><button class="dot" aria-label="Cocina"></button></ui-toggle>
+          </ui-toggle-group>
+          <span class="hs" id="hs"><b></b><span id="hsT">hermes</span></span>
+        </div>
+        <div class="row mid"><span class="dn"><span id="pwr" class="led" aria-hidden="true"></span><span id="dn">lámpara</span></span><span class="dv" id="dv">60%</span></div>
+        <div class="bar" id="bar"></div>
+        <div class="msg" id="msg">› listo</div>
+      </div>
+
+      <ui-toggle-group id="devG" aria-label="Dispositivo" default-value="lamp" deselectable="false" loop>
+        <ui-toggle value="lamp"><button class="key dev" data-dev="lamp"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l3 8H5z"/><path d="M12 11v9"/><path d="M8.5 20.5h7"/></svg><span class="lb">lámpara</span><span class="led"></span></button></ui-toggle>
+        <ui-toggle value="ceil"><button class="key dev" data-dev="ceil"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v6"/><path d="M5 14a7 6 0 0 1 14 0z"/><path d="M10 17a2 2 0 0 0 4 0"/></svg><span class="lb">techo</span><span class="led"></span></button></ui-toggle>
+        <ui-toggle value="curt"><button class="key dev" data-dev="curt"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3.5h18"/><path d="M5 3.5V20"/><path d="M19 3.5V20"/><path d="M5 20c3-4 4.5-9 4.5-16.5"/><path d="M19 20c-3-4-4.5-9-4.5-16.5"/></svg><span class="lb">cortinas</span><span class="led"></span></button></ui-toggle>
+        <ui-toggle value="strip"><button class="key dev" data-dev="strip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true"><path d="M2.5 12h19"/><circle cx="6" cy="12" r="1.3" fill="currentColor"/><circle cx="10" cy="12" r="1.3" fill="currentColor"/><circle cx="14" cy="12" r="1.3" fill="currentColor"/><circle cx="18" cy="12" r="1.3" fill="currentColor"/></svg><span class="lb">tira led</span><span class="led"></span></button></ui-toggle>
+      </ui-toggle-group>
+
+      <hm-dial class="key" aria-label="Nivel" data-agent-hidden>
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="47" fill="#f7f7f6" stroke="#18181b" stroke-width=".6"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#dcdcd8" stroke-width="1.4" pathLength="100" stroke-dasharray="75 100" transform="rotate(135 50 50)"/>
+          <circle id="arc" cx="50" cy="50" r="40" fill="none" stroke="#18181b" stroke-width="1.4" pathLength="100" stroke-dasharray="0 100" transform="rotate(135 50 50)" stroke-linecap="round"/>
+          <g id="needle"><line x1="50" y1="7" x2="50" y2="22" stroke="#18181b" stroke-width=".7"/></g>
+        </svg>
+        <div class="val" aria-hidden="true"><div class="num" id="num">60</div><div class="unit" id="unit">brillo</div></div>
+      </hm-dial>
+
+      <ui-toggle-group id="sceneG" aria-label="Escena" loop>
+        <ui-toggle value="noche"><button class="key pill-k" aria-label="Noche"><span class="pill"><span class="led"></span><span class="lb">noche</span></span></button></ui-toggle>
+        <ui-toggle value="salir" data-agent-confirm="Apaga todas las luces y cierra todas las cortinas de la casa"><button class="key pill-k" aria-label="Salir"><span class="pill"><span class="led"></span><span class="lb">salir</span></span></button></ui-toggle>
+      </ui-toggle-group>
+
+      <ui-toolbar aria-label="Controles" loop data-agent-hidden>
+        <ui-toolbar-button style="grid-column:3;grid-row:2"><button class="key" data-act="minus" aria-label="Bajar nivel"><span class="blk"></span><span class="tag" aria-hidden="true">−</span></button></ui-toolbar-button>
+        <ui-toolbar-button style="grid-column:3;grid-row:3"><button class="key" data-act="plus" aria-label="Subir nivel"><span class="blk"></span><span class="tag" aria-hidden="true">+</span></button></ui-toolbar-button>
+        <ui-toolbar-button style="grid-column:3;grid-row:4"><button class="key" data-act="up" aria-label="Habitación anterior"><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1" stroke-linecap="round" aria-hidden="true"><path d="M12 21V3M5 10l7-7 7 7"/></svg></span></button></ui-toolbar-button>
+        <ui-toolbar-button style="grid-column:4;grid-row:4"><button class="key" data-act="stop" aria-label="Apagar"><span class="cap"><span class="sq"></span></span></button></ui-toolbar-button>
+        <ui-toolbar-button style="grid-column:5;grid-row:4"><button class="key" id="recBtn" data-act="rec" aria-label="Hablar con Hermes"><span class="cap"><span class="rec"></span></span></button></ui-toolbar-button>
+        <ui-toolbar-button style="grid-column:3;grid-row:5"><button class="key" data-act="down" aria-label="Habitación siguiente"><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="1" stroke-linecap="round" aria-hidden="true"><path d="M12 3v18M5 14l7 7 7-7"/></svg></span></button></ui-toolbar-button>
+        <ui-toolbar-button style="grid-column:4;grid-row:5"><button class="key" data-act="play" aria-label="Encender"><span class="cap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#09090b"/></svg></span></button></ui-toolbar-button>
+        <ui-toggle id="shiftT" style="grid-column:5;grid-row:5"><button class="key" id="shiftBtn" aria-label="Shift"><span class="cap"><span class="txt">shift</span></span></button></ui-toggle>
+      </ui-toolbar>
+    </div>
+  </hm-home>
+
+  <div class="log" id="log" aria-live="polite"></div>
+
+  <ui-collapsible id="peek" data-agent-hidden>
+    <ui-collapsible-trigger><button class="peek-t"><span>lo que ve hermes · <span id="mcp">webmcp –</span></span><span class="chev">⌄</span></button></ui-collapsible-trigger>
+    <ui-collapsible-panel hidden><pre id="peekBody"></pre></ui-collapsible-panel>
+  </ui-collapsible>
+
+  <p class="help">Toca <span style="color:var(--accent)">●</span> o pulsa <kbd>R</kbd> para hablar con Hermes · <kbd>shift</kbd>+<span style="color:var(--accent)">●</span> deshace lo último que hizo · <kbd>Tab</kbd> y flechas recorren cada grupo</p>
+</div>
+</body>
+</html>
