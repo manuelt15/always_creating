@@ -21,15 +21,16 @@ export default function HomePage() {
       <main id="main">
         {/* Hero */}
         <section className="relative isolate overflow-hidden">
-          <div className="shell relative">
-            {/* El campo se funde por abajo hasta casi el 001: sin línea de corte. */}
-            <div className="hero-field pointer-events-none absolute inset-0">
-              {/* Capa estatica: la textura existe aunque el canvas tarde en arrancar. */}
-              <div aria-hidden className="dither-gradient absolute inset-0 opacity-[0.28]" />
-              <DitherField className="absolute inset-0" />
-              <div aria-hidden className="dither-veil absolute inset-0" />
-            </div>
+          {/* El campo va a sangre, sobre toda la sección: dentro del .shell se cortaba
+              en seco contra el fondo en pantallas anchas. Se funde por abajo hasta casi el 001. */}
+          <div className="hero-field pointer-events-none absolute inset-0">
+            {/* Capa estatica: la textura existe aunque el canvas tarde en arrancar. */}
+            <div aria-hidden className="dither-gradient absolute inset-0 opacity-[0.28]" />
+            <DitherField className="absolute inset-0" />
+            <div aria-hidden className="dither-veil absolute inset-0" />
+          </div>
 
+          <div className="shell relative">
             <div className="relative pb-32 pt-32 sm:pb-44">
               <h1 className="text-display text-paper">
                 <span className="enter block">always</span>

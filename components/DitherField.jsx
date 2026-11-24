@@ -4,8 +4,8 @@ import { useEffect, useRef } from 'react'
 
 // Color del punto: sale de --dither (r, g, b) en app/globals.css, uno por tema.
 const FALLBACK_TINT = [80, 128, 255]
-const MAX_COLS = 220
-const MAX_ROWS = 130
+const MAX_COLS = 260
+const MAX_ROWS = 150
 const FRAME_MS = 1000 / 30
 const DOT = 3 // backing pixels per cell: 2x2 dot plus a 1px gap
 
@@ -62,8 +62,11 @@ export default function DitherField({ className = '' }) {
       const width = Math.max(1, rect.width)
       const height = Math.max(1, rect.height)
       const cell = width < 640 ? 5 : 6
-      const cols = Math.max(1, Math.min(MAX_COLS, Math.floor(width / cell)))
-      const rows = Math.max(1, Math.min(MAX_ROWS, Math.floor(height / cell)))
+      // La celda crece con la pantalla en vez de recortar columnas: si solo se recortan,
+      // el punto sale más ancho que alto y en pantallas grandes se ve deformado.
+      const cellSize = Math.max(cell, width / MAX_COLS, height / MAX_ROWS)
+      const cols = Math.max(1, Math.min(MAX_COLS, Math.floor(width / cellSize)))
+      const rows = Math.max(1, Math.min(MAX_ROWS, Math.floor(height / cellSize)))
 
       if (cols === state.cols && rows === state.rows) return false
 
