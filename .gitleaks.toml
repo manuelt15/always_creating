@@ -1,0 +1,27 @@
+# Gitleaks: reglas por defecto más exclusiones de rutas que no son código del
+# proyecto (dependencias, artefactos de build y lockfiles). Sin esto el escaneo
+# devuelve ruido de node_modules y .next y el hook acaba ignorándose.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Dependencias, artefactos generados, lockfiles y entorno local"
+paths = [
+  # dependencias y entornos virtuales
+  '''(^|/)node_modules/''',
+  '''(^|/)\.venv/''',
+  '''(^|/)vendor/''',
+  # artefactos de build
+  '''(^|/)\.next/''',
+  '''(^|/)dist/''',
+  '''(^|/)build/''',
+  '''(^|/)out/''',
+  '''(^|/)coverage/''',
+  # lockfiles
+  '''(^|/)package-lock\.json$''',
+  '''(^|/)pnpm-lock\.yaml$''',
+  '''(^|/)yarn\.lock$''',
+  # variables de entorno locales: .gitignore las excluye, nunca se commitean
+  '''(^|/)\.env\.local$''',
+]

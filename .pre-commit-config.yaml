@@ -1,0 +1,15 @@
+# Hook local: bloquea el commit si gitleaks detecta un secreto en lo que se
+# está commiteando. La configuración vive en .gitleaks.toml, que excluye
+# dependencias, artefactos de build y lockfiles.
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      # gitleaks-system en lugar de gitleaks: el otro id usa language: golang y
+      # compila el binario con el toolchain de Go. Aquí gitleaks 8.30.1 ya está
+      # instalado en el sistema, así que el hook lo reutiliza sin instalar nada.
+      - id: gitleaks-system
+        # El hooks.yaml de v8.30.1 se olvida de pass_filenames en este id: sin
+        # esto pre-commit le pasa los ficheros y gitleaks git los rechaza.
+        pass_filenames: false
+        args: [--config=.gitleaks.toml]
