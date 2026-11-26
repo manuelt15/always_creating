@@ -6,7 +6,7 @@
 useDefault = true
 
 [allowlist]
-description = "Dependencias, artefactos generados, lockfiles y entorno local"
+description = "Dependencias, artefactos generados y lockfiles"
 paths = [
   # dependencias y entornos virtuales
   '''(^|/)node_modules/''',
@@ -22,6 +22,4 @@ paths = [
   '''(^|/)package-lock\.json$''',
   '''(^|/)pnpm-lock\.yaml$''',
   '''(^|/)yarn\.lock$''',
-  # variables de entorno locales: .gitignore las excluye, nunca se commitean
-  '''(^|/)\.env\.local$''',
 ]
