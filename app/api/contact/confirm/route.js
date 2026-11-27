@@ -10,9 +10,12 @@ function pagina(request, estado) {
   return NextResponse.redirect(new URL(`/confirmacion?estado=${estado}`, request.url), 303)
 }
 
+const TOKEN_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function GET(request) {
   const token = new URL(request.url).searchParams.get('token')
-  if (!token) {
+  // El token es un randomUUID: lo que no tenga esa forma no llega a la base de datos.
+  if (!token || !TOKEN_REGEX.test(token)) {
     return pagina(request, 'invalido')
   }
 
@@ -28,7 +31,7 @@ export async function GET(request) {
       return pagina(request, 'usado')
     }
 
-    const siteUrl = new URL(request.url).origin
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin).replace(/\/$/, '')
     const about = getExperiment(doc.about)?.title || null
     const nombre = String(doc.name).replace(/[\r\n]+/g, ' ')
     await Promise.all([

@@ -45,7 +45,7 @@ export async function POST(request) {
     await connectDB()
     await ContactMessage.create({ name, email, message, kind, about, token })
 
-    const siteUrl = new URL(request.url).origin
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin).replace(/\/$/, '')
     await sendEmail({
       to: email,
       subject: 'Confirma tu mensaje, always creating',
